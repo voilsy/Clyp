@@ -1,0 +1,31 @@
+{
+  "name": "clyp",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/"
+  },
+  "build": {
+    "appId": "com.Voilsy.app",
+    "publish": {
+      "provider": "github",
+      "owner": "Voilsy",
+      "repo": "Clyp"
+    }
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^42.2.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.3"
+  }
+}
