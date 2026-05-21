@@ -876,10 +876,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 .has-update::before {
   content: '';
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
+  top: 0px;
+  right: 0px;
+  width: 10px;
+  height: 10px;
   background: var(--accent);
   border-radius: 50%;
   z-index: 10;
@@ -894,6 +894,4 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 /* Обводка точки для вкладки внутри настроек (позицию чуть смещаем) */
 .sni.has-update::before { 
   box-shadow: 0 0 0 2px var(--bg-side); 
-  top: 13px; 
-  right: 14px; 
 }

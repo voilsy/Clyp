@@ -1605,9 +1605,7 @@ if (window.electronAPI) {
             <div style="padding-bottom: 2px;">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                 <span style="font-size:12px;font-weight:800;color:var(--tx1)">v${data.version}</span>
-                <span class="bdg" style="background:var(--accent-lt);color:var(--accent);display:flex;align-items:center;gap:4px;padding:2px 6px;">
-                  <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;"><use href="#ic-inner-upd"/></svg>New Release
-                </span>
+                <span class="bdg" style="background:var(--accent-lt);color:var(--accent);display:flex;align-items:center;gap:4px;padding:2px 6px;">New Release</span>
               </div>
               <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.4;letter-spacing:0.01em;" class="gh-notes">${cleanNotes}</div>
             </div>`;
