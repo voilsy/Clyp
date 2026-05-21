@@ -8,6 +8,7 @@
   },
   "build": {
     "appId": "com.voilsy.Clyp",
+    "productName": "Clyp",
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
