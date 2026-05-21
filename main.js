@@ -3,8 +3,8 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 
-const dataPath = path.join(path.dirname(app.getPath('exe')), 'clyp-vault.json');
-let mainWindow; // ИСПРАВЛЕНИЕ: Делаем окно глобальной переменной
+const dataPath = path.join(app.getPath('userData'), 'clyp-vault.json');
+let mainWindow;
 
 ipcMain.handle('save-data', async (event, data) => {
   try { fs.writeFileSync(dataPath, JSON.stringify(data)); return true; } 
@@ -18,8 +18,6 @@ ipcMain.handle('load-data', async () => {
   return null; 
 });
 
-// ... (сохраняем handle saveData и loadData без изменений) ...
-
 ipcMain.handle('get-version', () => app.getVersion());
 
 function createWindow () {
@@ -27,7 +25,7 @@ function createWindow () {
     width: 1180, height: 760, minWidth: 850, minHeight: 600,
     autoHideMenuBar: true, frame: false, transparent: true, center: true,
     icon: path.join(__dirname, 'assets/Clyp.ico'),
-    webPreferences: { nodeIntegration: false, contextIsolation: true, preload: path.join(__dirname, 'preload.js'), devTools: true } // Выключаем devTools
+    webPreferences: { nodeIntegration: false, contextIsolation: true, preload: path.join(__dirname, 'preload.js'), devTools: false }
   });
 
   mainWindow.loadFile('index.html');
@@ -45,11 +43,9 @@ function createWindow () {
   ipcMain.on('window-close', () => mainWindow.close());
 }
 
-// Настройки автообновлятора
 autoUpdater.autoDownload = false; 
 autoUpdater.autoInstallOnAppQuit = true;
 
-// Отправляем статусы обратно в интерфейс (ИСПРАВЛЕНО: шлем только ключевые маркеры)
 autoUpdater.on('checking-for-update', () => {
   if(mainWindow) mainWindow.webContents.send('update-status', { status: 'checking', msg: 'Checking updates server...' });
 });
@@ -89,8 +85,13 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle('write-backup', async (event, { filename, data }) => {
   try {
-    // Формируем путь строго в папке, где лежит исполняемый .exe файл программы
-    const backupPath = path.join(path.dirname(app.getPath('exe')), filename);
+    const backupsDir = path.join(app.getPath('userData'), 'backups');
+    
+    if (!fs.existsSync(backupsDir)) {
+      fs.mkdirSync(backupsDir, { recursive: true });
+    }
+
+    const backupPath = path.join(backupsDir, filename);
     fs.writeFileSync(backupPath, JSON.stringify(data, null, 2), 'utf8');
     return true;
   } catch (err) {

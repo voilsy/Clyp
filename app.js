@@ -25,7 +25,7 @@ let nnid=6, selNid=1, nSaveT=null, nFilt='all';
 let curSort = 'az';
 
 // --- ЛОГИКА СОХРАНЕНИЯ И ПРИМЕНЕНИЯ ---
-let SETT = { theme: 'system', color: 'blue', font: 'Regular', date: 'DD.MM.YYYY', lang: 'en', autoBackup: false, passExpiry: true, weakWarn: true, autoUpdate: true, lastBackup: 0};
+let SETT = { theme: 'system', color: 'blue', font: 'Regular', date: 'DD.MM.YYYY', lang: 'en', autoBackup: false, passExpiry: true, weakWarn: true, autoUpdate: true, lastBackup: 0, releaseNotes: '', releaseVersion: ''};
 let TEMP_SETT = { ...SETT };
 
 // ГЛАВНАЯ ФУНКЦИЯ СОХРАНЕНИЯ: собирает все массивы и отправляет на жесткий диск
@@ -1449,11 +1449,33 @@ function rendSett() {
   const el = document.getElementById("sett-body"); 
   if (el) el.innerHTML = (SS[curSS] || SS.general)(); 
   
-  // Подтягиваем версию из package.json
   if (curSS === 'updates' && window.electronAPI && window.electronAPI.getVersion) {
     window.electronAPI.getVersion().then(v => {
       const tit = document.getElementById('upd-title');
       if(tit) tit.textContent = `Clyp v${v}`;
+      
+      if (SETT.releaseVersion && SETT.releaseNotes) {
+        const relContainer = document.getElementById('release-notes-container');
+        if (relContainer) {
+          const cleanNotes = SETT.releaseNotes
+            .split('\n')
+            .filter(line => line.trim() !== '')
+            .join('<br style="content: \'\'; display: block; margin: 4px 0;">');
+
+          const isCurrent = (SETT.releaseVersion === v);
+          
+          relContainer.innerHTML = `
+            <div style="padding-bottom: 2px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span style="font-size:12px;font-weight:800;color:var(--tx1)">v${SETT.releaseVersion}</span>
+                <span class="bdg" style="background:var(--${isCurrent ? 'ok-bg' : 'accent-lt'});color:var(--${isCurrent ? 'ok' : 'accent'});display:flex;align-items:center;gap:4px;padding:2px 6px;">
+                  <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;"><use href="#${isCurrent ? 'ic-chk-tip' : 'ic-inner-upd'}"/></svg>${isCurrent ? 'Current' : 'New Release'}
+                </span>
+              </div>
+              <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.4;letter-spacing:0.01em;" class="gh-notes">${cleanNotes}</div>
+            </div>`;
+        }
+      }
     });
   }
 }
@@ -1475,7 +1497,6 @@ function runUpdateCheck() {
 
   if (updState === 'checking' || updState === 'downloading') return;
 
-  // Если обновление уже скачано, кнопка работает как перезапуск
   if (updState === 'ready') {
     if (window.electronAPI && window.electronAPI.installUpdate) {
       window.electronAPI.installUpdate();
@@ -1483,14 +1504,13 @@ function runUpdateCheck() {
     return;
   }
 
-  // Если обновление найдено, но автоскачивание выключено — кнопка запускает Download
   if (updState === 'ready-to-download') {
     updState = 'downloading';
     btn.disabled = true;
     btn.classList.add('spinning');
-    lbl.style.display = 'none'; // Скрываем текст
+    lbl.style.display = 'none';
     pLbl.textContent = l.tUpdAvailable;
-    pct.style.display = 'inline'; // Показываем проценты
+    pct.style.display = 'inline';
     if (window.electronAPI && window.electronAPI.downloadUpdate) {
       window.electronAPI.downloadUpdate();
     }
@@ -1499,12 +1519,12 @@ function runUpdateCheck() {
 
   updState = 'checking';
   btn.disabled = true;
-  btn.classList.add('spinning'); // Запускаем вращение иконки
-  lbl.style.display = 'none';    // Скрываем текст внутри кнопки
+  btn.classList.add('spinning');
+  lbl.style.display = 'none';
 
   sec.style.display = '';
   fill.style.width = '0%';
-  pct.style.display = 'none';     // Скрываем проценты во время проверки
+  pct.style.display = 'none';
   pLbl.textContent = l.tUpdChecking;
   
   log.textContent = '> Connecting to GitHub update servers...\n';
@@ -1528,7 +1548,6 @@ function runUpdateCheck() {
 //  IPC LISTENERS (Слушаем ответы от GitHub)
 // ═══════════════════════════════════════
 if (window.electronAPI) {
-  // ИСПРАВЛЕННЫЙ И БЕЗОПАСНЫЙ СЛУШАТЕЛЬ СТАТУСОВ (v1.0.1 Patch)
   if (window.electronAPI.onUpdateStatus) {
     window.electronAPI.onUpdateStatus((data) => {
       const log = document.getElementById('upd-log');
@@ -1540,10 +1559,8 @@ if (window.electronAPI) {
       const pct = document.getElementById('upd-pct');
       const l = DICT[SETT.lang] || DICT.en;
 
-      // Убираем вращение кнопки при любом ответе
       if (btn) btn.classList.remove('spinning');
 
-      // Фоновое тихое обновление
       if (data.status === 'ready' && updState === 'background-checking') {
         window.electronAPI.installUpdate();
         return;
@@ -1551,15 +1568,16 @@ if (window.electronAPI) {
 
       if (!log) return; 
 
-      // Выводим строчки лога
       log.textContent += '> ' + data.msg + '\n';
       log.scrollTop = log.scrollHeight; 
 
       if (data.status === 'available') {
-        // Динамическая подстановка Release Notes БЕЗ поломки верхнего интерфейса
+        SETT.releaseNotes = data.notes || '';
+        SETT.releaseVersion = data.version || '';
+        syncData();
+
         const relContainer = document.getElementById('release-notes-container');
         if (relContainer) {
-          // Форматируем текст заметок: убираем лишние пустые строки и делаем отступы аккуратными
           const cleanNotes = data.notes 
             ? data.notes.split('\n').filter(line => line.trim() !== '').join('<br style="content: \'\'; display: block; margin: 4px 0;">')
             : 'No release details provided.';
@@ -1576,7 +1594,6 @@ if (window.electronAPI) {
             </div>`;
         }
 
-        // Показываем панель прогресса (убеждаемся, что всё на месте)
         const updPanel = document.querySelector('.upd-panel');
         if (updPanel) updPanel.style.display = 'block'; 
 
@@ -1630,7 +1647,7 @@ if (window.electronAPI) {
       }
     });
   }
-  // Слушаем реальный прогресс скачивания с серверов GitHub
+
   if (window.electronAPI.onUpdateProgress) {
     window.electronAPI.onUpdateProgress((percent) => {
       const fill = document.getElementById('upd-prog-fill');
@@ -1659,8 +1676,8 @@ function toast(msgKey) {
   
   clearTimeout(tt); 
   tt = setTimeout(() => {
-    t.classList.add('hide'); // Запускаем CSS анимацию ухода
-    ttHide = setTimeout(() => t.remove(), 300); // Удаляем из DOM после анимации
+    t.classList.add('hide');
+    ttHide = setTimeout(() => t.remove(), 300);
   }, 2100);
 }
 function cpF(v, msgKey) { navigator.clipboard.writeText(v).catch(() => {}); toast(msgKey); }
@@ -1669,13 +1686,12 @@ function cpF(v, msgKey) { navigator.clipboard.writeText(v).catch(() => {}); toas
 //  REAL TOTP ALGORITHM & TIMER
 // ═══════════════════════════════════════
 
-// 1. Расшифровка секретного ключа (Base32)
 function base32ToBuffer(base32) {
   const base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let bits = "";
   for (let i = 0; i < base32.length; i++) {
     let val = base32chars.indexOf(base32.charAt(i));
-    if (val === -1) continue; // Игнорируем пробелы и неверные символы
+    if (val === -1) continue;
     bits += val.toString(2).padStart(5, '0');
   }
   let buffer = new Uint8Array(Math.floor(bits.length / 8));
@@ -1685,7 +1701,6 @@ function base32ToBuffer(base32) {
   return buffer;
 }
 
-// 2. Генерация 6-значного кода через Web Crypto API
 async function generateTOTP(secret) {
   if (!secret) return "NO KEY";
   try {
@@ -1703,13 +1718,12 @@ async function generateTOTP(secret) {
     const code = ((hmac[offset] & 0x7f) << 24) | ((hmac[offset + 1] & 0xff) << 16) | ((hmac[offset + 2] & 0xff) << 8) | (hmac[offset + 3] & 0xff);
     
     const totp = (code % 1000000).toString().padStart(6, '0');
-    return totp.slice(0, 3) + " " + totp.slice(3); // Формат: 123 456
+    return totp.slice(0, 3) + " " + totp.slice(3);
   } catch (e) {
     return "ERROR";
   }
 }
 
-// 3. Синхронизация с системным временем каждые 1000мс
 async function updateTOTPUI() {
   const epoch = Math.floor(Date.now() / 1000);
   const tsec = 30 - (epoch % 30);
@@ -1727,7 +1741,6 @@ async function updateTOTPUI() {
 }
 setInterval(updateTOTPUI, 1000);
 
-// Хелпер для копирования реального кода
 function copyTOTP() {
   const el = document.getElementById('tcode');
   if (el && !el.textContent.includes("KEY") && !el.textContent.includes("ERROR")) {
@@ -1739,19 +1752,16 @@ function copyTOTP() {
 //  CENTRAL EVENT ROUTER (CSP COMPLIANT)
 // ═══════════════════════════════════════
 document.addEventListener('click', (e) => {
-  // Ищем ближайший элемент с атрибутом data-action
   const target = e.target.closest('[data-action]');
   if (!target) return;
 
   const action = target.dataset.action;
 
-  // --- Навигация и Шапка ---
   if (action === 'nav') SP(parseInt(target.dataset.page), target);
   if (action === 'goAdd') goAdd();
   if (action === 'cancelAdd') cancelAdd();
   if (action === 'toggleTheme') toggleTheme();
-  
-  // --- Генератор ---
+
   if (action === 'setGT') setGT(parseInt(target.dataset.tab), target);
   if (action === 'genP') genP();
   if (action === 'copyP') copyP();
@@ -1759,8 +1769,6 @@ document.addEventListener('click', (e) => {
   if (action === 'toggleCC') toggleCC(target);
   if (action === 'toggleSw') target.classList.toggle('on');
 
-  
-  // --- Аккаунты (Добавление и Просмотр) ---
   if (action === 'saveAcc') saveAcc();
   if (action === 'selIco') selIco(target, target.dataset.icon);
   if (action === 'tog2FA') tog2FA(target);
@@ -1781,7 +1789,7 @@ document.addEventListener('click', (e) => {
   if (action === 'fillG') fillG();
   if (action === 'setCat') setCat(target.dataset.val, target.dataset.text, target);
   if (action === 'copyTOTP') copyTOTP();
-  // --- Резервные коды (Просмотр и Копирование) ---
+
   if (action === 'togBackupVis') {
     const a = ACCS.find(x => x.id === selId);
     if (a) {
@@ -1797,16 +1805,14 @@ document.addEventListener('click', (e) => {
       markUsed();
     }
   }
- 
-  // --- Заметки ---
+
   if (action === 'newN') newN();
   if (action === 'pinN') pinN();
   if (action === 'delN') delN();
   if (action === 'cpNote') cpNoteContent();
   if (action === 'togNT') togNT(target);
   if (action === 'setNF') setNF(target.dataset.filter, target);
-  
-  // --- Настройки и Модалки ---
+
   if (action === 'setSS') setSS(target.dataset.tab, target);
   if (action === 'saveSettings') saveSettings();
   if (action === 'discardSettings') discardSettings();
@@ -1818,7 +1824,7 @@ document.addEventListener('click', (e) => {
   if (action === 'closeEraseM') closeEraseM();
   if (action === 'confErase') confErase();
   if (action === 'runUpdateCheck') runUpdateCheck();
-  // НОВЫЕ:
+
   if (action === 'setTheme') { updateCustomSel(target.closest('.custom-sel-wrap').id, target.dataset.text, target); applyTheme(target.dataset.theme); syncData(); }
   if (action === 'setColor') { setAccentColor(target.dataset.color); syncData(); }
   if (action === 'setScale') { updateCustomSel(target.closest('.custom-sel-wrap').id, target.dataset.text, target); setFontSize(target.dataset.size); syncData(); }
@@ -1827,7 +1833,6 @@ document.addEventListener('click', (e) => {
   if (action === 'toast') toast(target.dataset.key);
   if (action === 'toggleSett') { toggleSett(target.dataset.key, target); syncData(); }
 
-  // --- FTUE (Экран первого запуска) ---
   if (action === 'ftueNext') ftueNext();
   if (action === 'ftuePrev') ftuePrev();
   if (action === 'setFLang') setFLang(target);
@@ -1836,7 +1841,6 @@ document.addEventListener('click', (e) => {
   if (action === 'setFScale') setFScale(target);
 });
 
-// Слушатель для инпутов (Range, Text)
 document.addEventListener('input', (e) => {
   const target = e.target;
   if (target.id === 'lslider') onLen(target);
@@ -1860,12 +1864,11 @@ function getFtueContent() {
   const l = DICT[TEMP_SETT.lang] || DICT.en;
   
   return [
-    // 0. Welcome (Приветствие)
     `
     <div class="ftue-title">${l.ftueTit1}</div>
     <div class="ftue-sub">${l.ftueSub1}</div>
     `,
-    // 1. Language (Выбор языка - Без сноски)
+
     `
     <div class="ftue-title" style="margin-bottom:8px">${l.ftueTit2}</div>
     <div class="lang-grid" style="width:100%; padding:0; gap:12px;">
@@ -1874,7 +1877,7 @@ function getFtueContent() {
       <div class="lang-opt ${TEMP_SETT.lang==='ru'?'on':''}" data-action="setFLang" data-lang="ru"><div class="lang-flag">🇷🇺</div><div class="lang-name">Русский</div><div class="lang-code">RU</div></div>
     </div>
     `,
-    // 2. Theme, Accent & Scale (Дизайн - Добавлено масштабирование, Без сноски)
+
     `
     <div class="ftue-title" style="margin-bottom:8px">${l.ftueTit3}</div>
     <div class="scard" style="width:100%; overflow:visible; text-align:left;">
@@ -1913,7 +1916,7 @@ function getFtueContent() {
       </div>
     </div>
     `,
-    // 3. Import (Импорт с изолированным абсолютным контейнером статуса)
+
     `
     <div class="ftue-title" style="margin-bottom:8px">${l.ftueTit4}</div>
     <div class="ftue-sub" style="margin-bottom:24px;">${l.ftueSub4}</div>
@@ -1947,7 +1950,6 @@ function renderFtue() {
   }
 }
 
-// Новая функция применения масштаба внутри FTUE слайдера
 function setFScale(btn) { setFontSize(btn.dataset.size, false); renderFtue();}
 function ftueNext() { if (fStep < fMax) { fStep++; renderFtue(); } else { finishFtue(); } }
 function ftuePrev() { if (fStep > 0) { fStep--; renderFtue(); } }
@@ -1967,7 +1969,6 @@ function finishFtue() {
     sb.style.display = 'flex';
     main.style.display = 'flex';
     
-    // Добавляем плавную анимацию появления приложению
     sb.classList.add('reveal-anim');
     main.classList.add('reveal-anim');
     
@@ -1976,7 +1977,6 @@ function finishFtue() {
   }, 300);
 }
 
-// Запуск приложения
 async function initApp() {
   document.querySelector('.sb').style.display = 'none';
   document.querySelector('.main').style.display = 'none';
@@ -2016,7 +2016,6 @@ async function initApp() {
         sb.style.display = 'flex';
         main.style.display = 'flex';
         
-        // Плавная анимация загрузки старого пользователя
         sb.classList.add('reveal-anim');
         main.classList.add('reveal-anim');
         
@@ -2043,12 +2042,10 @@ function launchMainApp() {
     ls.style.background = `linear-gradient(to right,var(--accent) 0%,var(--accent) ${p}%,var(--brm) ${p}%)`;
   }
 
-  // НОВОЕ: Автоматическая тихая проверка обновлений при запуске настроенного приложения
   if (SETT.autoUpdate && window.electronAPI && window.electronAPI.checkForUpdates) {
     updState = 'background-checking'; 
     window.electronAPI.checkForUpdates();
   }
 }
 
-// Старт!
 initApp();
