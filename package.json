@@ -4,26 +4,43 @@
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/"
+    "url": "https://github.com/voilsy/Clyp.git"
   },
   "build": {
-    "appId": "com.Voilsy.app",
+    "appId": "com.voilsy.Clyp",
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "win": {
+      "icon": "assets/Clyp.ico"
+    },
+    "files": [
+    "**/*",
+    "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme,test,__tests__,tests,powered-test,example,examples,*.d.ts,*.map}",
+    "!**/.git*",
+    "!**/.vscode*"
+    ],
     "publish": {
       "provider": "github",
-      "owner": "Voilsy",
+      "owner": "voilsy",
       "repo": "Clyp"
-    }
+    },
+    "asar": true
   },
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "keywords": [],
-  "author": "",
+  "author": "voilsy",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "electron": "^42.2.0"
+    "electron": "^42.2.0",
+    "electron-builder": "^26.8.1"
   },
   "dependencies": {
     "electron-updater": "^6.8.3"

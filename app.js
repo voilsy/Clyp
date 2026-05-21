@@ -25,7 +25,7 @@ let nnid=6, selNid=1, nSaveT=null, nFilt='all';
 let curSort = 'az';
 
 // --- ЛОГИКА СОХРАНЕНИЯ И ПРИМЕНЕНИЯ ---
-let SETT = { theme: 'system', color: 'blue', font: 'Regular', date: 'DD.MM.YYYY', lang: 'en', autoBackup: false, passExpiry: true, weakWarn: true, lastBackup: 0 };
+let SETT = { theme: 'system', color: 'blue', font: 'Regular', date: 'DD.MM.YYYY', lang: 'en', autoBackup: false, passExpiry: true, weakWarn: true, autoUpdate: true, lastBackup: 0};
 let TEMP_SETT = { ...SETT };
 
 // ГЛАВНАЯ ФУНКЦИЯ СОХРАНЕНИЯ: собирает все массивы и отправляет на жесткий диск
@@ -102,14 +102,13 @@ const DICT = {
     sgFnt: 'Font Size', sgFntS: 'Interface text size', optReg: 'Regular', optLg: 'Large', optXl: 'Extra Large',
     sgLan: 'Language & Region', sgDat: 'Date Format', sgDatS: 'How dates are displayed',
     sgSup: 'Support', sgFeed: 'Send Feedback', sgFeedS: 'Help us improve Clyp', sgFeedB: 'Feedback',
-    svTit: 'Vault & Data', svEnc: 'Encryption', svEncS: 'AES-256-GCM · Zero-knowledge architecture',
-    svBkp: 'Automatic Backup', svBkpS: 'Weekly automated encrypted backup', svExp: 'Password Expiry', svExpS: 'Remind to update old passwords',
+    svTit: 'Vault & Data', svBkp: 'Automatic Backup', svBkpS: 'Weekly automated encrypted backup', svExp: 'Password Expiry', svExpS: 'Remind to update old passwords',
     svWk: 'Weak Password Warnings', svWkS: 'Alert for passwords that are easy to crack',
     svIE: 'Import & Export', svImpC: 'Import Passwords', svImpCS: 'Import JSON (Chrome or Old App)', svImpB: 'Import',
     svExpV: 'Export Vault Backup', svExpVS: 'Download encrypted vault backup', svExpB: 'Export',
     svExpC: 'Export to CSV', svExpCS: '⚠ Passwords will be unencrypted', svExpCB: 'Export CSV',
     svDan: 'Danger Zone', svDel: 'Delete All Data', svDelS: 'Permanently wipe all accounts and notes', svDelB: 'Erase Vault',
-    suTit: 'Updates', suChk: 'Check for Updates', suAut: 'Automatic Updates', suAutS: 'Download and install updates automatically', suRel: 'Release Notes — v3.2.1',
+    suTit: 'Updates', suChk: 'Check for Updates', suAut: 'Automatic Updates', suAutS: 'Download and install updates automatically', suRel: 'Release Notes',
     // Системные уведомления и Empty States
     tSaved: 'Settings saved successfully!', tDiscarded: 'Changes discarded', tAccentUpdated: 'Accent color updated',
     tFontUpdated: 'Font size updated', tDateSaved: 'Date format saved', tNoAcc: 'No accounts found',
@@ -129,6 +128,7 @@ const DICT = {
     ftueTit4: "Almost done!", ftueSub4: "If you are coming from an old app, you can import your passwords right now. Or just start fresh!",
     ftueImp: "Import JSON File", ftueNot: "(You can always change these settings later in the app)",
     tImporting: "Processing...", tImportDone: "Success!", tImportError: "Failed",
+    tUpdChecking: "Checking updates server...", tUpdLatest: "No updates found", tUpdAvailable: "Downloading update...", tUpdPending: "Update is pending download", tUpdReady: "Update is ready to install", tUpdError: "Connection error",
   },
   ru: {
     navGen: 'Генератор', navAdd: 'Добавить', navAcc: 'Аккаунты', navNot: 'Заметки', navSet: 'Настройки',
@@ -161,14 +161,13 @@ const DICT = {
     sgFnt: 'Размер шрифта', sgFntS: 'Размер текста интерфейса', optReg: 'Обычный', optLg: 'Увеличенный', optXl: 'Очень крупный',
     sgLan: 'Язык и Регион', sgDat: 'Формат даты', sgDatS: 'Отображение дат',
     sgSup: 'Поддержка', sgFeed: 'Отправить отзыв', sgFeedS: 'Помогите нам стать лучше', sgFeedB: 'Отзыв',
-    svTit: 'Хранилище и Данные', svEnc: 'Шифрование', svEncS: 'AES-256-GCM · Архитектура нулевого разглашения',
-    svBkp: 'Резервное копирование', svBkpS: 'Еженедельные автоматические зашифрованные копии', svExp: 'Срок действия паролей', svExpS: 'Напоминать об обновлении старых паролей',
+    svTit: 'Хранилище и Данные', svBkp: 'Резервное копирование', svBkpS: 'Еженедельные автоматические зашифрованные копии', svExp: 'Срок действия паролей', svExpS: 'Напоминать об обновлении старых паролей',
     svWk: 'Слабые пароли', svWkS: 'Предупреждать о легких паролях',
     svIE: 'Импорт и Экспорт', svImpC: 'Импорт паролей', svImpCS: 'Поддержка JSON (со старого приложения)', svImpB: 'Импорт',
     svExpV: 'Резервная копия хранилища', svExpVS: 'Скачать зашифрованную резервную копию', svExpB: 'Экспорт',
     svExpC: 'Экспорт в CSV', svExpCS: '⚠ Пароли будут не зашифрованы', svExpCB: 'Export CSV',
     svDan: 'Опасная зона', svDel: 'Удалить все данные', svDelS: 'Безвозвратно стереть все аккаунты и заметки', svDelB: 'Стереть хранилище',
-    suTit: 'Обновления', suChk: 'Проверить обновления', suAut: 'Автообновление', suAutS: 'Автоматически устанавливать обновления', suRel: 'Список изменений — v3.2.1',
+    suTit: 'Обновления', suChk: 'Проверить обновления', suAut: 'Автообновление', suAutS: 'Автоматически устанавливать обновления', suRel: 'Список изменений',
     // Системные уведомления и Empty States
     tSaved: 'Настройки успешно сохранены!', tDiscarded: 'Изменения сброшены', tAccentUpdated: 'Акцентный цвет обновлен',
     tFontUpdated: 'Размер шрифта обновлен', tDateSaved: 'Формат даты сохранен', tNoAcc: 'Аккаунтов не найдено',
@@ -188,6 +187,7 @@ const DICT = {
     ftueTit4: "Почти готово!", ftueSub4: "Если ты переходишь со старой программы, можешь импортировать пароли прямо сейчас. Или начать с чистого листа!",
     ftueImp: "Импорт JSON файла", ftueNot: "(Ты всегда сможешь изменить это в настройках)",
     tImporting: "Обработка...", tImportDone: "Успешно!", tImportError: "Ошибка",
+    tUpdChecking: "Проверка серверов обновлений...", tUpdLatest: "Обновлений не найдено", tUpdAvailable: "Скачивание обновления...", tUpdPending: "Обновление ожидает загрузки", tUpdReady: "Обновление готово к установке", tUpdError: "Ошибка подключения",
   },
   uk: {
     navGen: 'Генератор', navAdd: 'Додати', navAcc: 'Акаунти', navNot: 'Нотатки', navSet: 'Налаштування',
@@ -220,14 +220,13 @@ const DICT = {
     sgFnt: 'Розмір шрифту', sgFntS: 'Розмір тексту інтерфейсу', optReg: 'Звичайний', optLg: 'Збільшений', optXl: 'Дуже великий',
     sgLan: 'Мова та Регіон', sgDat: 'Формат дати', sgDatS: 'Відображення дат',
     sgSup: 'Підтримка', sgFeed: 'Надіслати відгук', sgFeedS: 'Допоможіть нам стати краще', sgFeedB: 'Відгук',
-    svTit: 'Сховище та Дані', svEnc: 'Шифрування', svEncS: 'AES-256-GCM · Архітектура нульового розголошення',
-    svBkp: 'Резервне копіювання', svBkpS: 'Щотижневі автоматичні зашифровані копії', svExp: 'Термін дії паролів', svExpS: 'Нагадувати про оновлення старих паролів',
+    svTit: 'Сховище та Дані', svBkp: 'Резервне копіювання', svBkpS: 'Щотижневі автоматичні зашифровані копії', svExp: 'Термін дії паролів', svExpS: 'Нагадувати про оновлення старих паролів',
     svWk: 'Слабкі паролі', svWkS: 'Попереджати про легкі паролі',
     svIE: 'Import & Export', svImpC: 'Імпорт паролів', svImpCS: 'Підтримка JSON (зі старої програми)', svImpB: 'Імпорт',
     svExpV: 'Резервна копія сховища', svExpVS: 'Завантажити зашифровану резервну копію', svExpB: 'Експорт',
     svExpC: 'Експорт в CSV', svExpCS: '⚠ Паролі будуть незашифровані', svExpCB: 'Експорт CSV',
     svDan: 'Небезпечна зона', svDel: 'Видалити всі дані', svDelS: 'Безповоротно стерти всі акаунти та нотатки', svDelB: 'Стерти сховище',
-    suTit: 'Оновлення', suChk: 'Перевірити оновлення', suAut: 'Автооновлення', suAutS: 'Автоматично встановлювати оновлення', suRel: 'Список змін — v3.2.1',
+    suTit: 'Оновлення', suChk: 'Перевірити оновлення', suAut: 'Автооновлення', suAutS: 'Автоматично встановлювати оновлення', suRel: 'Список змін',
     // Системные уведомления и Empty States
     tSaved: 'Налаштування успішно збережено!', tDiscarded: 'Зміни скинуто', tAccentUpdated: 'Акцентний колір оновлено',
     tFontUpdated: 'Розмір шрифту оновлено', tDateSaved: 'Формат дати збережено', tNoAcc: 'Акаунтів не знайдено',
@@ -246,7 +245,8 @@ const DICT = {
     ftueTit2: "Обери мову", ftueTit3: "Налаштуй під себе", ftueTheme: "Тема", ftueAcc: "Акцентний колір",
     ftueTit4: "Майже готово!", ftueSub4: "Якщо ти переходиш зі старої програми, можеш імпортувати паролі прямо зараз. Або почати з чистого аркуша!",
     ftueImp: "Імпорт JSON файлу", ftueNot: "(Ти завжди зможеш змінити це в налаштуваннях)",
-    tImporting: "Обробка...", tImportDone: "Успішно!", tImportError: "Помилка", 
+    tImporting: "Обробка...", tImportDone: "Успішно!", tImportError: "Помилка",
+    tUpdChecking: "Перевірка серверів оновлень...", tUpdLatest: "Оновлень не знайдено", tUpdAvailable: "Завантаження оновлення...", tUpdPending: "Оновлення очікує на завантаження", tUpdReady: "Оновлення готове до встановлення", tUpdError: "Помилка підключення",
   }
 };
 
@@ -730,21 +730,35 @@ function genP(){
   addH(p);
 }
 function genPhr() {
-  const cnt = parseInt(document.getElementById("lslider").value); // Исправлено тут
+  const cnt = parseInt(document.getElementById("lslider").value); 
+  
+  // Получаем состояние переключателей напрямую из DOM
+  const poptSwitches = document.querySelectorAll('#popt .sw');
+  const doCap = poptSwitches[0] ? poptSwitches[0].classList.contains('on') : false;
+  const doNum = poptSwitches[1] ? poptSwitches[1].classList.contains('on') : false;
+
   const ws = [];
-  for (let i = 0; i < cnt; i++)
-    ws.push(WDS[Math.floor(Math.random() * WDS.length)]);
+  for (let i = 0; i < cnt; i++) {
+    let word = WDS[Math.floor(Math.random() * WDS.length)];
+    // Если включены заглавные буквы
+    if (doCap) word = word.charAt(0).toUpperCase() + word.slice(1);
+    // Если включены цифры (добавляем случайную цифру в конец слова)
+    if (doNum) word += Math.floor(Math.random() * 10);
+    ws.push(word);
+  }
+  
   const p = ws.join("·");
   document.getElementById("pout").textContent = p;
   document.getElementById("phrase-wrap").style.display = "block";
   document.getElementById("phrase-out").innerHTML = ws
-    .map(
-      (w, i) =>
-        `<span class="pw">${w}</span>${i < ws.length - 1 ? '<span style="font-size:14px;color:var(--tx3);display:flex;align-items:center">·</span>' : ""}`,
-    )
+    .map((w, i) => `<span class="pw">${w}</span>${i < ws.length - 1 ? '<span style="font-size:14px;color:var(--tx3);display:flex;align-items:center">·</span>' : ""}`)
     .join("");
-  const ent = Math.round(cnt * Math.log2(WDS.length));
+    
+  // Немного увеличиваем энтропию, если включены усложнения
+  const entBonus = (doCap ? 1 : 0) + (doNum ? 3.32 : 0);
+  const ent = Math.round(cnt * (Math.log2(WDS.length) + entBonus));
   curGenEntropy = ent;
+  
   document.getElementById("entv").textContent = ent;
   updRing(ent);
   updStr(ent, "ss1", "ss2", "ss3", "ss4", "stxt");
@@ -1254,65 +1268,65 @@ const SS = {
   general: () => {
     const l = DICT[TEMP_SETT.lang] || DICT.en;
     return `
-<div class="sh">${l.sgTit}</div>
-<div class="scard" style="overflow:visible">
-  <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-theme"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgThm}</div><div class="ssub">${l.sgThmS}</div></div>
-    <div class="custom-sel-wrap sctrl" id="theme-wrap" data-action="toggleCustomMenu" data-target="theme-wrap">
-      <div class="custom-sel-val" id="theme-val">${TEMP_SETT.theme === "system" ? l.optSys : (TEMP_SETT.theme === "light" ? l.optLi : l.optDa)}</div>
-      <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M7 9.5L12 14.5L17 9.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="custom-sel-opts">
-        <div class="custom-opt ${TEMP_SETT.theme === "system" ? "on" : ""}" data-action="setTheme" data-theme="system" data-text="${l.optSys}">${l.optSys}</div>
-        <div class="custom-opt ${TEMP_SETT.theme === "light" ? "on" : ""}" data-action="setTheme" data-theme="light" data-text="${l.optLi}">${l.optLi}</div>
-        <div class="custom-opt ${TEMP_SETT.theme === "dark" ? "on" : ""}" data-action="setTheme" data-theme="dark" data-text="${l.optDa}">${l.optDa}</div>
+    <div class="sh">${l.sgTit}</div>
+    <div class="scard" style="overflow:visible">
+      <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-theme"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgThm}</div><div class="ssub">${l.sgThmS}</div></div>
+        <div class="custom-sel-wrap sctrl" id="theme-wrap" data-action="toggleCustomMenu" data-target="theme-wrap">
+          <div class="custom-sel-val" id="theme-val">${TEMP_SETT.theme === "system" ? l.optSys : (TEMP_SETT.theme === "light" ? l.optLi : l.optDa)}</div>
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M7 9.5L12 14.5L17 9.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="custom-sel-opts">
+            <div class="custom-opt ${TEMP_SETT.theme === "system" ? "on" : ""}" data-action="setTheme" data-theme="system" data-text="${l.optSys}">${l.optSys}</div>
+            <div class="custom-opt ${TEMP_SETT.theme === "light" ? "on" : ""}" data-action="setTheme" data-theme="light" data-text="${l.optLi}">${l.optLi}</div>
+            <div class="custom-opt ${TEMP_SETT.theme === "dark" ? "on" : ""}" data-action="setTheme" data-theme="dark" data-text="${l.optDa}">${l.optDa}</div>
+          </div>
+        </div>
+      </div>
+      <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-color"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgAcc}</div><div class="ssub">${l.sgAccS}</div></div>
+        <div style="display:flex;gap:8px;" class="sctrl">
+          <div class="color-btn" data-c="blue" style="width:20px;height:20px;border-radius:50%;background:#3B82F6;cursor:pointer;box-shadow:${TEMP_SETT.color === "blue" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="blue"></div>
+          <div class="color-btn" data-c="green" style="width:20px;height:20px;border-radius:50%;background:#10B981;cursor:pointer;box-shadow:${TEMP_SETT.color === "green" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="green"></div>
+          <div class="color-btn" data-c="purple" style="width:20px;height:20px;border-radius:50%;background:#8B5CF6;cursor:pointer;box-shadow:${TEMP_SETT.color === "purple" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="purple"></div>
+          <div class="color-btn" data-c="pink" style="width:20px;height:20px;border-radius:50%;background:#EC4899;cursor:pointer;box-shadow:${TEMP_SETT.color === "pink" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="pink"></div>
+          <div class="color-btn" data-c="orange" style="width:20px;height:20px;border-radius:50%;background:#F59E0B;cursor:pointer;box-shadow:${TEMP_SETT.color === "orange" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="orange"></div>
+        </div>
+      </div>
+      <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-font"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgFnt}</div><div class="ssub">${l.sgFntS}</div></div>
+        <div class="custom-sel-wrap sctrl" id="font-wrap" data-action="toggleCustomMenu" data-target="font-wrap">
+          <div class="custom-sel-val" id="font-val">${TEMP_SETT.font === 'Regular' ? l.optReg : (TEMP_SETT.font === 'Large' ? l.optLg : l.optXl)}</div>
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M7 9.5L12 14.5L17 9.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="custom-sel-opts">
+            <div class="custom-opt ${TEMP_SETT.font === "Regular" ? "on" : ""}" data-action="setScale" data-size="Regular" data-text="${l.optReg}">${l.optReg}</div>
+            <div class="custom-opt ${TEMP_SETT.font === "Large" ? "on" : ""}" data-action="setScale" data-size="Large" data-text="${l.optLg}">${l.optLg}</div>
+            <div class="custom-opt ${TEMP_SETT.font === "Extra Large" ? "on" : ""}" data-action="setScale" data-size="Extra Large" data-text="${l.optXl}">${l.optXl}</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-color"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgAcc}</div><div class="ssub">${l.sgAccS}</div></div>
-    <div style="display:flex;gap:8px;" class="sctrl">
-      <div class="color-btn" data-c="blue" style="width:20px;height:20px;border-radius:50%;background:#3B82F6;cursor:pointer;box-shadow:${TEMP_SETT.color === "blue" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="blue"></div>
-      <div class="color-btn" data-c="green" style="width:20px;height:20px;border-radius:50%;background:#10B981;cursor:pointer;box-shadow:${TEMP_SETT.color === "green" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="green"></div>
-      <div class="color-btn" data-c="purple" style="width:20px;height:20px;border-radius:50%;background:#8B5CF6;cursor:pointer;box-shadow:${TEMP_SETT.color === "purple" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="purple"></div>
-      <div class="color-btn" data-c="pink" style="width:20px;height:20px;border-radius:50%;background:#EC4899;cursor:pointer;box-shadow:${TEMP_SETT.color === "pink" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="pink"></div>
-      <div class="color-btn" data-c="orange" style="width:20px;height:20px;border-radius:50%;background:#F59E0B;cursor:pointer;box-shadow:${TEMP_SETT.color === "orange" ? "0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)" : "0 0 0 2px var(--bg-card), 0 0 0 0 transparent"};" data-action="setColor" data-color="orange"></div>
-    </div>
-  </div>
-  <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-font"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgFnt}</div><div class="ssub">${l.sgFntS}</div></div>
-    <div class="custom-sel-wrap sctrl" id="font-wrap" data-action="toggleCustomMenu" data-target="font-wrap">
-      <div class="custom-sel-val" id="font-val">${TEMP_SETT.font === 'Regular' ? l.optReg : (TEMP_SETT.font === 'Large' ? l.optLg : l.optXl)}</div>
-      <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M7 9.5L12 14.5L17 9.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="custom-sel-opts">
-        <div class="custom-opt ${TEMP_SETT.font === "Regular" ? "on" : ""}" data-action="setScale" data-size="Regular" data-text="${l.optReg}">${l.optReg}</div>
-        <div class="custom-opt ${TEMP_SETT.font === "Large" ? "on" : ""}" data-action="setScale" data-size="Large" data-text="${l.optLg}">${l.optLg}</div>
-        <div class="custom-opt ${TEMP_SETT.font === "Extra Large" ? "on" : ""}" data-action="setScale" data-size="Extra Large" data-text="${l.optXl}">${l.optXl}</div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="slbl" style="margin-top:4px">${l.sgLan}</div>
-<div class="scard" style="overflow:visible">
-  <div class="lang-grid">${[
-    {code:'en',flag:'🇺🇸',name:'English',sub:'US'},
-    {code:'uk',flag:'🇺🇦',name:'Українська',sub:'UA'},
-    {code:'ru',flag:'🇷🇺',name:'Русский',sub:'RU'}
-  ].map(lg=>`<div class="lang-opt${TEMP_SETT.lang===lg.code?' on':''}" data-action="setLang" data-lang="${lg.code}"><div class="lang-flag">${lg.flag}</div><div class="lang-name">${lg.name}</div><div class="lang-code">${lg.sub}</div></div>`).join('')}</div>
-  <div class="srow" style="border-top:1px solid var(--br)"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-date"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgDat}</div><div class="ssub">${l.sgDatS}</div></div>
-    <div class="custom-sel-wrap sctrl" id="date-wrap" data-action="toggleCustomMenu" data-target="date-wrap">
-      <div class="custom-sel-val" id="date-val">${TEMP_SETT.date}</div>
-      <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M7 9.5L12 14.5L17 9.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="custom-sel-opts">
-        <div class="custom-opt ${TEMP_SETT.date === "MM/DD/YYYY" ? "on" : ""}" data-action="setDate" data-date="MM/DD/YYYY">MM/DD/YYYY</div>
-        <div class="custom-opt ${TEMP_SETT.date === "DD.MM.YYYY" ? "on" : ""}" data-action="setDate" data-date="DD.MM.YYYY">DD.MM.YYYY</div>
-        <div class="custom-opt ${TEMP_SETT.date === "YYYY-MM-DD" ? "on" : ""}" data-action="setDate" data-date="YYYY-MM-DD">YYYY-MM-DD</div>
+    <div class="slbl" style="margin-top:4px">${l.sgLan}</div>
+    <div class="scard" style="overflow:visible">
+      <div class="lang-grid">${[
+        {code:'en',flag:'🇺🇸',name:'English',sub:'US'},
+        {code:'uk',flag:'🇺🇦',name:'Українська',sub:'UA'},
+        {code:'ru',flag:'🇷🇺',name:'Русский',sub:'RU'}
+      ].map(lg=>`<div class="lang-opt${TEMP_SETT.lang===lg.code?' on':''}" data-action="setLang" data-lang="${lg.code}"><div class="lang-flag">${lg.flag}</div><div class="lang-name">${lg.name}</div><div class="lang-code">${lg.sub}</div></div>`).join('')}</div>
+      <div class="srow" style="border-top:1px solid var(--br)"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-date"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgDat}</div><div class="ssub">${l.sgDatS}</div></div>
+        <div class="custom-sel-wrap sctrl" id="date-wrap" data-action="toggleCustomMenu" data-target="date-wrap">
+          <div class="custom-sel-val" id="date-val">${TEMP_SETT.date}</div>
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M7 9.5L12 14.5L17 9.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="custom-sel-opts">
+            <div class="custom-opt ${TEMP_SETT.date === "MM/DD/YYYY" ? "on" : ""}" data-action="setDate" data-date="MM/DD/YYYY">MM/DD/YYYY</div>
+            <div class="custom-opt ${TEMP_SETT.date === "DD.MM.YYYY" ? "on" : ""}" data-action="setDate" data-date="DD.MM.YYYY">DD.MM.YYYY</div>
+            <div class="custom-opt ${TEMP_SETT.date === "YYYY-MM-DD" ? "on" : ""}" data-action="setDate" data-date="YYYY-MM-DD">YYYY-MM-DD</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
-<div class="slbl" style="margin-top:4px">${l.sgSup}</div>
-<div class="scard">
-  <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-feedback"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgFeed}</div><div class="ssub">${l.sgFeedS}</div></div><button class="btn-s sctrl" style="height:29px;font-size:11px;opacity:0.5;cursor:not-allowed;" data-action="toast" data-key="tFeedbackDisabled">${l.sgFeedB}</button></div>
-</div>`
+    
+    <div class="slbl" style="margin-top:4px">${l.sgSup}</div>
+    <div class="scard">
+      <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-feedback"/></svg></div><div style="flex:1"><div class="slbl2">${l.sgFeed}</div><div class="ssub">${l.sgFeedS}</div></div><button class="btn-s sctrl" style="height:29px;font-size:11px;opacity:0.5;cursor:not-allowed;" data-action="toast" data-key="tFeedbackDisabled">${l.sgFeedB}</button></div>
+    </div>`
   },
 
   vault: () => {
@@ -1347,88 +1361,244 @@ const SS = {
         <div class="upd-ico" id="upd-ico"><svg viewBox="0 0 24 24"><use href="#ic-logo"/></svg></div>
         <div style="flex:1">
           <div style="display:flex;align-items:center;gap:8px;">
-            <div style="font-size:13px;font-weight:800;letter-spacing:-.015em" id="upd-title">Clyp v3.2.1</div>
-            <div class="upd-badge" id="upd-badge" style="background:var(--ok-bg);color:var(--ok);padding:2px 8px;font-size:10px;"><span>✓</span> Up to date</div>
+            <div style="font-size:13px;font-weight:800;letter-spacing:-.015em" id="upd-title">Clyp v...</div>
+            <div class="upd-badge" id="upd-badge" style="background:var(--ok-bg);color:var(--ok);padding:4px 10px;font-size:11px;display:flex;align-items:center;gap:4px;">
+              <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg>Up to date
+            </div>
           </div>
-          <div style="font-size:11px;color:var(--tx3);margin-top:4px;font-weight:500" id="upd-sub">Current version · Build 2026.05.08</div>
+          <div style="font-size:11px;color:var(--tx3);font-weight:500" id="upd-sub">Current version</div>
         </div>
         <button class="btn-p" id="upd-btn" data-action="runUpdateCheck" style="height:34px;font-size:12px">
           <svg viewBox="0 0 24 24"><use href="#ic-inner-upd"/></svg><span id="upd-btn-lbl">${l.suChk}</span>
         </button>
       </div>
       <div class="upd-prog-wrap" id="upd-prog-sec" style="display:none">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
           <span style="font-size:11px;font-weight:700;color:var(--tx2)" id="upd-prog-lbl">Checking servers…</span>
-          <span style="font-size:11px;font-weight:800;color:var(--accent)" id="upd-pct">0%</span>
+          <span style="font-size:11px;font-weight:800;color:var(--accent);display:none;" id="upd-pct">0%</span>
         </div>
         <div class="upd-prog-bar"><div class="upd-prog-fill" id="upd-prog-fill"></div></div>
         <div class="upd-log" id="upd-log"></div>
       </div>
-      <div class="srow" style="border-top:1px solid var(--br);"><div class="sico" style="background:var(--accent-lt); color:var(--accent);"><svg viewBox="0 0 24 24"><use href="#ic-inner-sync"/></svg></div><div style="flex:1"><div class="slbl2">${l.suAut}</div><div class="ssub">${l.suAutS}</div></div><button class="sw on sctrl" data-action="toggleSw"></button></div>
+      <div class="srow" style="border-top:1px solid var(--br);"><div class="sico" style="background:var(--accent-lt); color:var(--accent);"><svg viewBox="0 0 24 24"><use href="#ic-inner-sync"/></svg></div><div style="flex:1"><div class="slbl2">${l.suAut}</div><div class="ssub">${l.suAutS}</div></div><button class="sw ${TEMP_SETT.autoUpdate ? 'on' : ''} sctrl" data-action="toggleSett" data-key="autoUpdate"></button></div>
     </div>
 
     <div class="slbl" style="margin-top:16px">${l.suRel}</div>
     <div class="scard">
-      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-        ${[
-          {
-            v: "v3.2.1",
-            date: "May 8, 2026",
-            tag: "Current",
-            tagC: "ok",
-            notes: [
-              "Fixed clipboard auto-clear on macOS Sequoia",
-              "Improved autofill detection for SPAs",
-              "Security patch for XSS in note renderer",
-            ],
-          },
-          {
-            v: "v3.2.0",
-            date: "Apr 22, 2026",
-            tag: "Stable",
-            tagC: "accent",
-            notes: [
-              "Added Secure Notes with end-to-end encryption",
-              "New language support: Ukrainian, Russian",
-              "Redesigned password generator with entropy meter",
-            ],
-          },
-          {
-            v: "v3.1.5",
-            date: "Mar 15, 2026",
-            tag: "",
-            tagC: "",
-            notes: [
-              "Dark web breach monitoring improvements",
-              "Performance fixes for large vaults (1000+ items)",
-            ],
-          },
-        ]
-          .map(
-            (r) =>
-              `<div style="border-bottom:1px solid var(--br);padding-bottom:10px;last-child{border:none}"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><span style="font-size:12px;font-weight:800;color:var(--tx1)">${r.v}</span>${r.tag ? `<span class="bdg" style="background:var(--${r.tagC === "ok" ? "ok-bg" : "accent-lt"});color:var(--${r.tagC === "ok" ? "ok" : "accent"})">${r.tag}</span>` : ``}<span style="font-size:10px;color:var(--tx3);font-weight:600;margin-left:auto">${r.date}</span></div>${r.notes.map((n) => `<div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.6;padding-left:10px;position:relative">· ${n}</div>`).join("")}</div>`,
-          )
-          .join("")}
+      <div id="release-notes-container" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+        <div style="border-bottom:none;padding-bottom:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+            <span style="font-size:12px;font-weight:800;color:var(--tx1)">v1.0.0</span>
+            <span class="bdg" style="background:var(--ok-bg);color:var(--ok);display:flex;align-items:center;gap:4px;">
+              <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg>Current
+            </span>
+            <span style="font-size:10px;color:var(--tx3);font-weight:600;margin-left:auto">Initial Release</span>
+          </div>
+          <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.6;position:relative">· Clyp Password Manager is now live!</div>
+          <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.6;position:relative">· Built-in authenticator (TOTP) and generator.</div>
+        </div>
       </div>
     </div>`;
   }
 };
 
 function setSS(k, btn) { curSS = k; document.querySelectorAll(".sni").forEach((b) => b.classList.remove("on")); btn.classList.add("on"); rendSett(); }
-function rendSett() { const el = document.getElementById("sett-body"); if (el) el.innerHTML = (SS[curSS] || SS.general)(); }
+function rendSett() { 
+  const el = document.getElementById("sett-body"); 
+  if (el) el.innerHTML = (SS[curSS] || SS.general)(); 
+  
+  // Подтягиваем версию из package.json
+  if (curSS === 'updates' && window.electronAPI && window.electronAPI.getVersion) {
+    window.electronAPI.getVersion().then(v => {
+      const tit = document.getElementById('upd-title');
+      if(tit) tit.textContent = `Clyp v${v}`;
+    });
+  }
+}
 
-function runUpdateCheck(){
-  const btn=document.getElementById('upd-btn'); const lbl=document.getElementById('upd-btn-lbl');
-  const sec=document.getElementById('upd-prog-sec'); const fill=document.getElementById('upd-prog-fill');
-  const pLbl=document.getElementById('upd-prog-lbl'); const pct=document.getElementById('upd-pct');
-  const log=document.getElementById('upd-log'); const badge=document.getElementById('upd-badge');
-  const ico=document.getElementById('upd-ico'); const title=document.getElementById('upd-title'); const sub=document.getElementById('upd-sub');
-  if(updState==='checking')return;
-  updState='checking'; lbl.textContent='...'; btn.disabled=true;
-  sec.style.display=''; fill.style.width='0%'; log.textContent=''; badge.style.background='var(--wn-bg)'; badge.style.color='var(--wn)'; badge.innerHTML='<span>↻</span> ...';
-  const steps=[{t:400,p:15,l:'Connecting to update servers…',log:'> Connecting to updates.clyp.app\n> TLS handshake complete'},{t:900,p:35,l:'Verifying current version…',log:'> Current: v3.2.1 (build 2026.05.08)\n> Checking release channel: stable'},{t:1500,p:60,l:'Fetching latest release info…',log:'> Fetching manifest…\n> Signature verification: OK'},{t:2200,p:85,l:'Comparing versions…',log:'> Latest stable: v3.2.1\n> Latest beta: v3.3.0-beta.2'},{t:2900,p:100,l:'Complete!',log:'> ✓ You are running the latest stable release\n> No update required'}];
-  steps.forEach(({t,p,l,log:lg})=>{setTimeout(()=>{fill.style.width=p+'%'; pLbl.textContent=l; pct.textContent=p+'%'; log.textContent+=lg+'\n'; log.scrollTop=log.scrollHeight;},t);});
-  setTimeout(()=>{updState='idle'; btn.disabled=false; lbl.textContent='Check Again'; badge.style.background='var(--ok-bg)'; badge.style.color='var(--ok)'; badge.innerHTML='<span>✓</span> Up to date'; ico.style.background='var(--ok-bg)'; ico.querySelector('svg').style.color='var(--ok)'; title.textContent='Clyp v3.2.1 — Latest'; sub.textContent='You are on the latest stable version'; fill.style.background='var(--ok)'; pLbl.textContent='✓ No updates available';},3400);
+// ═══════════════════════════════════════
+//  REAL AUTO-UPDATER LOGIC
+// ═══════════════════════════════════════
+
+function runUpdateCheck() {
+  const btn = document.getElementById('upd-btn');
+  const lbl = document.getElementById('upd-btn-lbl');
+  const sec = document.getElementById('upd-prog-sec');
+  const fill = document.getElementById('upd-prog-fill');
+  const pLbl = document.getElementById('upd-prog-lbl');
+  const pct = document.getElementById('upd-pct');
+  const log = document.getElementById('upd-log');
+  const badge = document.getElementById('upd-badge');
+  const l = DICT[SETT.lang] || DICT.en;
+
+  if (updState === 'checking' || updState === 'downloading') return;
+
+  // Если обновление уже скачано, кнопка работает как перезапуск
+  if (updState === 'ready') {
+    if (window.electronAPI && window.electronAPI.installUpdate) {
+      window.electronAPI.installUpdate();
+    }
+    return;
+  }
+
+  // Если обновление найдено, но автоскачивание выключено — кнопка запускает Download
+  if (updState === 'ready-to-download') {
+    updState = 'downloading';
+    btn.disabled = true;
+    btn.classList.add('spinning');
+    lbl.style.display = 'none'; // Скрываем текст
+    pLbl.textContent = l.tUpdAvailable;
+    pct.style.display = 'inline'; // Показываем проценты
+    if (window.electronAPI && window.electronAPI.downloadUpdate) {
+      window.electronAPI.downloadUpdate();
+    }
+    return;
+  }
+
+  updState = 'checking';
+  btn.disabled = true;
+  btn.classList.add('spinning'); // Запускаем вращение иконки
+  lbl.style.display = 'none';    // Скрываем текст внутри кнопки
+
+  sec.style.display = '';
+  fill.style.width = '0%';
+  pct.style.display = 'none';     // Скрываем проценты во время проверки
+  pLbl.textContent = l.tUpdChecking;
+  
+  log.textContent = '> Connecting to GitHub update servers...\n';
+  badge.style.background = 'var(--wn-bg)';
+  badge.style.color = 'var(--wn)';
+  badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-warn-tip"/></svg> Checking...`;
+
+  if (window.electronAPI && window.electronAPI.checkForUpdates) {
+    window.electronAPI.checkForUpdates();
+  } else {
+    btn.classList.remove('spinning');
+    lbl.style.display = 'inline';
+    log.textContent += '> Error: Auto-update backend is unavailable (Browser mode?)\n';
+    updState = 'idle';
+    btn.disabled = false;
+    lbl.textContent = l.suChk;
+  }
+}
+
+// ═══════════════════════════════════════
+//  IPC LISTENERS (Слушаем ответы от GitHub)
+// ═══════════════════════════════════════
+if (window.electronAPI) {
+  
+  // ИСПРАВЛЕНО: Один единственный чистый слушатель изменения статусов (без дубликатов)
+  if (window.electronAPI.onUpdateStatus) {
+    window.electronAPI.onUpdateStatus((data) => {
+      const log = document.getElementById('upd-log');
+      const pLbl = document.getElementById('upd-prog-lbl');
+      const badge = document.getElementById('upd-badge');
+      const btn = document.getElementById('upd-btn');
+      const lbl = document.getElementById('upd-btn-lbl');
+      const fill = document.getElementById('upd-prog-fill');
+      const pct = document.getElementById('upd-pct');
+      const l = DICT[SETT.lang] || DICT.en;
+
+      // Если мы не на вкладке обновлений, но пришло автообновление в фоне — обрабатываем тихо
+      if (data.status === 'ready' && updState === 'background-checking') {
+        window.electronAPI.installUpdate(); // Автоматически накатываем и перезапускаем
+        return;
+      }
+
+      if (!log) return; 
+
+      // Выводим логи строго по строчкам (\n)
+      log.textContent += '> ' + data.msg + '\n';
+      log.scrollTop = log.scrollHeight; 
+
+      if (data.status === 'available') {
+        // Загрузка динамических Release Notes с GitHub
+        const relContainer = document.getElementById('release-notes-container');
+        if (relContainer) {
+          // Чистим контейнер от старого локального Changelog и вставляем актуальный с GitHub
+          relContainer.innerHTML = `
+            <div style="border-bottom:none;padding-bottom:0;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <span style="font-size:12px;font-weight:800;color:var(--tx1)">v${data.version}</span>
+                <span class="bdg" style="background:var(--accent-lt);color:var(--accent);display:flex;align-items:center;gap:4px;">
+                  <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-inner-upd"/></svg>New Release
+                </span>
+              </div>
+              <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.6;white-space:pre-wrap;" class="gh-notes">${data.notes || 'No release details provided.'}</div>
+            </div>`;
+        }
+
+        if (SETT.autoUpdate) {
+          window.electronAPI.downloadUpdate();
+          updState = 'downloading';
+          pLbl.textContent = l.tUpdAvailable;
+          pct.style.display = 'inline'; // Показываем проценты при скачивании
+        } else {
+          // Если автообновление выключено, останавливаем анимацию и даем скачать вручную
+          updState = 'ready-to-download';
+          btn.disabled = false;
+          btn.classList.remove('spinning');
+          lbl.style.display = 'inline';
+          lbl.textContent = 'Download';
+          pLbl.textContent = l.tUpdPending;
+          pct.style.display = 'none';
+          badge.style.background = 'var(--wn-bg)';
+          badge.style.color = 'var(--wn)';
+          badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-warn-tip"/></svg> Available`;
+        }
+      } 
+      else if (data.status === 'latest') {
+        updState = 'idle';
+        btn.disabled = false;
+        btn.classList.remove('spinning');
+        lbl.style.display = 'inline';
+        lbl.textContent = l.suChk; // Возвращаем исходный текст "Проверить обновления"
+        badge.style.background = 'var(--ok-bg)';
+        badge.style.color = 'var(--ok)';
+        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg> Up to date`;
+        pLbl.textContent = l.tUpdLatest;
+        pct.style.display = 'none';
+        fill.style.width = '100%';
+        fill.style.background = 'var(--ok)';
+      } 
+      else if (data.status === 'ready') {
+        updState = 'ready';
+        btn.disabled = false;
+        btn.classList.remove('spinning');
+        lbl.style.display = 'inline';
+        lbl.textContent = 'Install & Restart';
+        btn.style.background = 'var(--ok)';
+        badge.style.background = 'var(--ok-bg)';
+        badge.style.color = 'var(--ok)';
+        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg> Downloaded`;
+        pLbl.textContent = l.tUpdReady;
+        pct.style.display = 'none';
+      } 
+      else if (data.status === 'error') {
+        updState = 'idle';
+        btn.disabled = false;
+        btn.classList.remove('spinning');
+        lbl.style.display = 'inline';
+        lbl.textContent = l.suChk;
+        badge.style.background = 'var(--er-bg)';
+        badge.style.color = 'var(--er)';
+        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-circle-tip"/></svg> Error`;
+        pLbl.textContent = l.tUpdError;
+        pct.style.display = 'none';
+        fill.style.background = 'var(--er)';
+      }
+    });
+  }
+
+  // Слушаем реальный прогресс скачивания с серверов GitHub
+  if (window.electronAPI.onUpdateProgress) {
+    window.electronAPI.onUpdateProgress((percent) => {
+      const fill = document.getElementById('upd-prog-fill');
+      const pct = document.getElementById('upd-pct');
+      if (fill) fill.style.width = percent + '%';
+      if (pct) pct.textContent = percent + '%';
+    });
+  }
 }
 
 // ═══════════════════════════════════════
@@ -1831,6 +2001,12 @@ function launchMainApp() {
   if(ls) {
     const p = ((ls.value - ls.min) / (ls.max - ls.min)) * 100;
     ls.style.background = `linear-gradient(to right,var(--accent) 0%,var(--accent) ${p}%,var(--brm) ${p}%)`;
+  }
+
+  // НОВОЕ: Автоматическая тихая проверка обновлений при запуске настроенного приложения
+  if (SETT.autoUpdate && window.electronAPI && window.electronAPI.checkForUpdates) {
+    updState = 'background-checking'; 
+    window.electronAPI.checkForUpdates();
   }
 }
 

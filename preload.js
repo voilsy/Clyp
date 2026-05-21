@@ -12,7 +12,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveData: (data) => ipcRenderer.invoke('save-data', data),
   loadData: () => ipcRenderer.invoke('load-data'),
 
+  getVersion: () => ipcRenderer.invoke('get-version'), // <-- Добавить
+  downloadUpdate: () => ipcRenderer.send('download-update'), // <-- Добавить
+
   checkForUpdates: () => ipcRenderer.send('check-for-updates'),
+  installUpdate: () => ipcRenderer.send('install-update'),
   onUpdateStatus: (callback) => ipcRenderer.on('update-status', (_event, data) => callback(data)),
   onUpdateProgress: (callback) => ipcRenderer.on('update-progress', (_event, percent) => callback(percent))
 })

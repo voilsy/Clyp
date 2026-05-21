@@ -860,3 +860,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
   100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
 }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spinning svg {
+  animation: spin 1s linear infinite;
+}
