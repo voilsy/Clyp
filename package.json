@@ -13,7 +13,6 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "productName": "Clyp",
       "shortcutName": "Clyp",
       "uninstallDisplayName": "Clyp"
     },
