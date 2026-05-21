@@ -585,7 +585,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
 .topt{padding:4px 11px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid transparent;transition:all .15s}
-.igrid {display: grid; grid-template-columns: repeat(6, 40px); gap: 14px; justify-content: space-between; margin-top: 12px;}
+.igrid {display: grid; grid-template-columns: repeat(7, 40px); gap: 14px; justify-content: space-between; margin-top: 12px;}
 .iopt {width: 40px; height: 40px; border-radius: 8px; border: 1.5px solid var(--br);background: var(--bg-in); display: flex; align-items: center; justify-content: center;cursor: pointer; transition: all .15s; font-size: 18px;font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;padding-bottom: 2px;}
 .iopt:hover,.iopt.on{border-color:var(--accent);background:var(--accent-lt)}
 

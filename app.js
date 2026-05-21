@@ -99,28 +99,28 @@ const DICT = {
     ssGen: 'General', ssVlt: 'Vault', ssUpd: 'Updates',
     sgTit: 'General Settings', sgThm: 'Theme', sgThmS: 'Light, dark, or follow system', optSys: 'System', optLi: 'Light', optDa: 'Dark',
     sgAcc: 'Accent Color', sgAccS: 'Choose your primary color',
-    sgFnt: 'Font Size', sgFntS: 'Interface text size', optReg: 'Regular', optLg: 'Large', optXl: 'Extra Large',
+    sgFnt: 'Interface Size', sgFntS: 'Change interface size', optReg: 'Regular', optLg: 'Large', optXl: 'Extra Large',
     sgLan: 'Language & Region', sgDat: 'Date Format', sgDatS: 'How dates are displayed',
     sgSup: 'Support', sgFeed: 'Send Feedback', sgFeedS: 'Help us improve Clyp', sgFeedB: 'Feedback',
-    svTit: 'Vault & Data', svBkp: 'Automatic Backup', svBkpS: 'Weekly automated encrypted backup', svExp: 'Password Expiry', svExpS: 'Remind to update old passwords',
+    svTit: 'Vault & Data', svBkp: 'Automatic Backup', svBkpS: 'Weekly automated backup', svExp: 'Password Expiry', svExpS: 'Remind to update old passwords',
     svWk: 'Weak Password Warnings', svWkS: 'Alert for passwords that are easy to crack',
     svIE: 'Import & Export', svImpC: 'Import Passwords', svImpCS: 'Import JSON (Chrome or Old App)', svImpB: 'Import',
-    svExpV: 'Export Vault Backup', svExpVS: 'Download encrypted vault backup', svExpB: 'Export',
+    svExpV: 'Export Vault Backup', svExpVS: 'Download vault backup', svExpB: 'Export',
     svExpC: 'Export to CSV', svExpCS: '⚠ Passwords will be unencrypted', svExpCB: 'Export CSV',
     svDan: 'Danger Zone', svDel: 'Delete All Data', svDelS: 'Permanently wipe all accounts and notes', svDelB: 'Erase Vault',
     suTit: 'Updates', suChk: 'Check for Updates', suAut: 'Automatic Updates', suAutS: 'Download and install updates automatically', suRel: 'Release Notes',
     // Системные уведомления и Empty States
     tSaved: 'Settings saved successfully!', tDiscarded: 'Changes discarded', tAccentUpdated: 'Accent color updated',
-    tFontUpdated: 'Font size updated', tDateSaved: 'Date format saved', tNoAcc: 'No accounts found',
+    tFontUpdated: 'Interface size updated', tDateSaved: 'Date format saved', tNoAcc: 'No accounts found',
     tNoNotes: 'No notes found', tCopied: 'Copied!', tPassCopied: 'Password copied!', tEmailCopied: 'Email copied!',
-    tNoteCopied: 'Note copied!', tAccAdded: 'added to vault!', tAccUpdated: 'updated!', tAccDeleted: 'Account deleted',
+    tNoteCopied: 'Note copied!', tAccAdded: 'Added to vault!', tAccUpdated: 'Updated!', tAccDeleted: 'Account deleted',
     tNoteDeleted: 'Note deleted', tNotePinned: 'Note pinned!', tNoteUnpinned: 'Note unpinned',
     tNoNoteSel: "Select a note or create a new one", tSaving: "Saving...", tSavedNote: "Saved",
     tFeedbackDisabled: 'Feedback is currently disabled', tEraseSuccess: 'All data has been permanently erased.',
     tImportSuccess: 'Successfully imported accounts!', tImportFail: 'No valid accounts found in file.',
     tParseFail: 'Failed to parse JSON file.', tBackupSuccess: 'Vault backup exported successfully!',
     tCsvSuccess: 'CSV exported successfully!', tEmptyVault: 'Vault is empty!', tEnterService: 'Please enter a service name',
-    tEnterPass: 'Please enter a password', tAutoBackup: 'Running scheduled automatic backup...',
+    tEnterPass: 'Please enter a password', tEnterUser: 'Please enter a username or email', tAutoBackup: 'Running scheduled automatic backup...',
     tPassInserted: 'Password inserted!', tStrongGen: 'Strong password generated!', tAddedPrefix: 'Added ',
     tWarnTit: 'Warnings', tWeakDetect: 'Weak password detected', tExpDetect: 'Password is older than 90 days', tNotFnd: 'Not found',
     ftueTit1: "Hello! My name is Clyp", ftueSub1: "I'm your new best friend for password management. Let's set everything up in just a few clicks.",
@@ -144,7 +144,7 @@ const DICT = {
     cSec: 'секунды', cHr: 'часы', cYr: 'годы', cCen: 'века',
     strW: 'Слабый', strF: 'Средний', strG: 'Надежный', strS: 'Отличный',
     aLbl1: 'Детали сервиса', aLbl2: 'Данные для входа', aLbl3: 'Иконка', aLbl4: 'Дополнительно', aLbl5: 'Предпросмотр', aLbl6: 'Оценка безопасности', aLbl7: 'Чек-лист',
-    aSn: 'Название сервиса', aUrl: 'Веб-сайт', aCat: 'Категория', aUser: 'Имя / Email', aPass: 'Пароль',
+    aSn: 'Название сервиса', aUrl: 'Веб-сайт', aCat: 'Категория', aUser: 'Юзернейм / Email', aPass: 'Пароль',
     aGenP: 'Сгенерировать надежный', a2fa: 'Включить 2FA (TOTP)', a2faSub: 'Добавить секретный ключ', aTotpK: 'Секретный ключ TOTP',
     acSort: 'Сортировка:', acAll: 'Все', acBtnAdd: 'Добавить аккаунт',
     acSort1: 'А–Я', acSort2: 'Я–А', acSort3: 'Недавние', acSort4: 'Сначала старые',
@@ -158,28 +158,28 @@ const DICT = {
     ssGen: 'Основные', ssVlt: 'Хранилище', ssUpd: 'Обновления',
     sgTit: 'Основные настройки', sgThm: 'Тема', sgThmS: 'Светлая, темная или системная', optSys: 'Системная', optLi: 'Светлая', optDa: 'Темная',
     sgAcc: 'Акцентный цвет', sgAccS: 'Выберите основной цвет',
-    sgFnt: 'Размер шрифта', sgFntS: 'Размер текста интерфейса', optReg: 'Обычный', optLg: 'Увеличенный', optXl: 'Очень крупный',
-    sgLan: 'Язык и Регион', sgDat: 'Формат даты', sgDatS: 'Отображение дат',
+    sgFnt: 'Размер интерфейса', sgFntS: 'Измените размер интерфейса', optReg: 'Обычный', optLg: 'Увеличенный', optXl: 'Очень крупный',
+    sgLan: 'Язык и Регион', sgDat: 'Формат даты', sgDatS: 'Вариант отображения дат',
     sgSup: 'Поддержка', sgFeed: 'Отправить отзыв', sgFeedS: 'Помогите нам стать лучше', sgFeedB: 'Отзыв',
-    svTit: 'Хранилище и Данные', svBkp: 'Резервное копирование', svBkpS: 'Еженедельные автоматические зашифрованные копии', svExp: 'Срок действия паролей', svExpS: 'Напоминать об обновлении старых паролей',
-    svWk: 'Слабые пароли', svWkS: 'Предупреждать о легких паролях',
+    svTit: 'Хранилище и Данные', svBkp: 'Резервное копирование', svBkpS: 'Еженедельное автоматическое создание резервной копии', svExp: 'Срок действия паролей', svExpS: 'Напоминать об обновлении старых паролей',
+    svWk: 'Слабые пароли', svWkS: 'Предупреждать о паролях, которые легко взломать',
     svIE: 'Импорт и Экспорт', svImpC: 'Импорт паролей', svImpCS: 'Поддержка JSON (со старого приложения)', svImpB: 'Импорт',
-    svExpV: 'Резервная копия хранилища', svExpVS: 'Скачать зашифрованную резервную копию', svExpB: 'Экспорт',
+    svExpV: 'Резервная копия хранилища', svExpVS: 'Сохранить резервную копию хранилища', svExpB: 'Экспорт',
     svExpC: 'Экспорт в CSV', svExpCS: '⚠ Пароли будут не зашифрованы', svExpCB: 'Export CSV',
     svDan: 'Опасная зона', svDel: 'Удалить все данные', svDelS: 'Безвозвратно стереть все аккаунты и заметки', svDelB: 'Стереть хранилище',
     suTit: 'Обновления', suChk: 'Проверить обновления', suAut: 'Автообновление', suAutS: 'Автоматически устанавливать обновления', suRel: 'Список изменений',
     // Системные уведомления и Empty States
     tSaved: 'Настройки успешно сохранены!', tDiscarded: 'Изменения сброшены', tAccentUpdated: 'Акцентный цвет обновлен',
-    tFontUpdated: 'Размер шрифта обновлен', tDateSaved: 'Формат даты сохранен', tNoAcc: 'Аккаунтов не найдено',
-    tNoNotes: 'Заметок не найдено', tCopied: 'Скопировано!', tPassCopied: 'Пароль скопирован!', tEmailCopied: 'Email скопирован!',
+    tFontUpdated: 'Размер интерфейса обновлен', tDateSaved: 'Формат даты сохранен', tNoAcc: 'Аккаунтов не найдено',
+    tNoNotes: 'Заметки не найдено', tCopied: 'Скопировано!', tPassCopied: 'Пароль скопирован!', tEmailCopied: 'Email скопирован!',
     tNoteCopied: 'Заметка скопирована!', tAccAdded: 'Добавлен в хранилище!', tAccUpdated: 'Обновлен!', tAccDeleted: 'Аккаунт удален',
     tNoteDeleted: 'Заметка удалена', tNotePinned: 'Заметка закреплена!', tNoteUnpinned: 'Заметка откреплена',
     tNoNoteSel: "Выберите заметку или создайте новую", tSaving: "Сохранение...", tSavedNote: "Сохранено",
     tFeedbackDisabled: 'Отправка отзывов сейчас отключена', tEraseSuccess: 'Все данные были безвозвратно удалены.',
-    tImportSuccess: 'Аккаунты успешно импортированы!', tImportFail: 'Валидных аккаунтов в файле не найдено.',
+    tImportSuccess: 'Аккаунты успешно импортированы!', tImportFail: 'Доступных аккаунтов в файле не было найдено.',
     tParseFail: 'Ошибка чтения JSON файла.', tBackupSuccess: 'Резервная копия успешно экспортирована!',
     tCsvSuccess: 'CSV успешно экспортирован!', tEmptyVault: 'Хранилище пустое!', tEnterService: 'Пожалуйста, введите название сервиса',
-    tEnterPass: 'Пожалуйста, введите пароль', tAutoBackup: 'Запуск автоматического резервного копирования...',
+    tEnterPass: 'Пожалуйста, введите пароль', tEnterUser: 'Пожалуйста, введите имя пользователя или email', tAutoBackup: 'Запуск автоматического резервного копирования...',
     tPassInserted: 'Пароль вставлен!', tStrongGen: 'Надежный пароль сгенерирован!', tAddedPrefix: 'Добавлен ',
     tWarnTit: 'Внимание', tWeakDetect: 'Обнаружен слабый пароль', tExpDetect: 'Пароль не менялся более 90 дней', tNotFnd: 'Не найдено',
     ftueTit1: "Привет! Меня зовут Clyp", ftueSub1: "Я твой новый лучший друг в управлении паролями. Давай всё настроим за пару кликов.",
@@ -202,8 +202,8 @@ const DICT = {
     gChar: 'Символів', gCrack: 'Злам займе', gCs: 'Алфавіт',
     cSec: 'секунди', cHr: 'години', cYr: 'роки', cCen: 'століття',
     strW: 'Слабкий', strF: 'Середній', strG: 'Надійний', strS: 'Відмінний',
-    aLbl1: 'Деталі сервісу', aLbl2: 'Дані для входу', aLbl3: 'Иконка', aLbl4: 'Додатково', aLbl5: 'Попередній перегляд', aLbl6: 'Оцінка безпеки', aLbl7: 'Чек-лист',
-    aSn: 'Назва сервісу', aUrl: 'Веб-сайт', aCat: 'Категорія', aUser: 'Ім\'я / Email', aPass: 'Пароль',
+    aLbl1: 'Деталі сервісу', aLbl2: 'Дані для входу', aLbl3: 'Іконка', aLbl4: 'Додатково', aLbl5: 'Попередній перегляд', aLbl6: 'Оцінка безпеки', aLbl7: 'Чек-лист',
+    aSn: 'Назва сервісу', aUrl: 'Веб-сайт', aCat: 'Категорія', aUser: 'Ім\'я користувача / Email', aPass: 'Пароль',
     aGenP: 'Згенерувати надійний', a2fa: 'Увімкнути 2FA (TOTP)', a2faSub: 'Додати секретний ключ', aTotpK: 'Секретний ключ TOTP',
     acSort: 'Сортування:', acAll: 'Всі', acBtnAdd: 'Додати акаунт',
     acSort1: 'А–Я', acSort2: 'Я–А', acSort3: 'Нещодавні', acSort4: 'Дата додавання',
@@ -213,32 +213,32 @@ const DICT = {
     aBackup: "Резервні коди", acBkpCodes: "РЕЗЕРВНІ КОДИ", tBackupCopied: "Резервні коди скопійовано!",
     acStr: 'Надійність', acChg: 'Змінено', acAge: 'Вік', acUnique: 'Унікальність', unqYes: 'Унікальний', unqNo: 'Повторів:', ageFresh: 'Свіжий', ageOld: 'Застаріває', ageCrit: 'Старий', dPlural: 'дн.',
     nNew: '+ Нова', nBtn: 'Нова нотатка', nTags: 'Теги:',
-    mDelT: 'Вилити акаунт?', mDelS: 'Це назавжди видалить акаунт з вашого сховища. Цю дію неможливо скасувати.', mDelBtn: 'Видалити',
+    mDelT: 'Видалити акаунт?', mDelS: 'Це назавжди видалить акаунт з вашого сховища. Цю дію неможливо скасувати.', mDelBtn: 'Видалити',
     ssGen: 'Основні', ssVlt: 'Сховище', ssUpd: 'Оновлення',
     sgTit: 'Основні налаштування', sgThm: 'Тема', sgThmS: 'Світла, темна або системна', optSys: 'Системна', optLi: 'Світла', optDa: 'Темна',
     sgAcc: 'Акцентний колір', sgAccS: 'Оберіть основний колір',
-    sgFnt: 'Розмір шрифту', sgFntS: 'Розмір тексту інтерфейсу', optReg: 'Звичайний', optLg: 'Збільшений', optXl: 'Дуже великий',
-    sgLan: 'Мова та Регіон', sgDat: 'Формат дати', sgDatS: 'Відображення дат',
+    sgFnt: 'Розмір інтерфейсу', sgFntS: 'Змінює масштаб програми', optReg: 'Звичайний', optLg: 'Збільшений', optXl: 'Дуже великий',
+    sgLan: 'Мова та Регіон', sgDat: 'Формат дати', sgDatS: 'Варіант відображення дат',
     sgSup: 'Підтримка', sgFeed: 'Надіслати відгук', sgFeedS: 'Допоможіть нам стати краще', sgFeedB: 'Відгук',
-    svTit: 'Сховище та Дані', svBkp: 'Резервне копіювання', svBkpS: 'Щотижневі автоматичні зашифровані копії', svExp: 'Термін дії паролів', svExpS: 'Нагадувати про оновлення старих паролів',
-    svWk: 'Слабкі паролі', svWkS: 'Попереджати про легкі паролі',
+    svTit: 'Сховище та Дані', svBkp: 'Резервне копіювання', svBkpS: 'Щотижневе автоматичне створення резервної копії', svExp: 'Термін дії паролів', svExpS: 'Нагадувати про оновлення старих паролів',
+    svWk: 'Слабкі паролі', svWkS: 'Попереджати про паролі, які легко зламати',
     svIE: 'Import & Export', svImpC: 'Імпорт паролів', svImpCS: 'Підтримка JSON (зі старої програми)', svImpB: 'Імпорт',
-    svExpV: 'Резервна копія сховища', svExpVS: 'Завантажити зашифровану резервну копію', svExpB: 'Експорт',
+    svExpV: 'Резервна копія сховища', svExpVS: 'Завантажити резервну копію програми', svExpB: 'Експорт',
     svExpC: 'Експорт в CSV', svExpCS: '⚠ Паролі будуть незашифровані', svExpCB: 'Експорт CSV',
-    svDan: 'Небезпечна зона', svDel: 'Видалити всі дані', svDelS: 'Безповоротно стерти всі акаунти та нотатки', svDelB: 'Стерти сховище',
+    svDan: 'Небезпечна зона', svDel: 'Видалити всі дані', svDelS: 'Назавжди стерти всі акаунти та нотатки', svDelB: 'Стерти сховище',
     suTit: 'Оновлення', suChk: 'Перевірити оновлення', suAut: 'Автооновлення', suAutS: 'Автоматично встановлювати оновлення', suRel: 'Список змін',
     // Системные уведомления и Empty States
     tSaved: 'Налаштування успішно збережено!', tDiscarded: 'Зміни скинуто', tAccentUpdated: 'Акцентний колір оновлено',
-    tFontUpdated: 'Розмір шрифту оновлено', tDateSaved: 'Формат дати збережено', tNoAcc: 'Акаунтів не знайдено',
+    tFontUpdated: 'Розмір інтерфейсу оновлено', tDateSaved: 'Формат дати збережено', tNoAcc: 'Акаунтів не знайдено',
     tNoNotes: 'Нотаток не знайдено', tCopied: 'Скопійовано!', tPassCopied: 'Пароль скопійовано!', tEmailCopied: 'Email скопійовано!',
     tNoteCopied: 'Нотатку скопійовано!', tAccAdded: 'Додано до сховища!', tAccUpdated: 'Оновлено!', tAccDeleted: 'Акаунт видалено',
     tNoteDeleted: 'Нотатку видалено', tNotePinned: 'Нотатку закріплено!', tNoteUnpinned: 'Нотатку відкріплено',
     tNoNoteSel: "Оберіть нотатку або створіть нову", tSaving: "Збереження...", tSavedNote: "Збережено",
     tFeedbackDisabled: 'Надсилання відгуків наразі вимкнено', tEraseSuccess: 'Усі дані були безповоротно видалені.',
-    tImportSuccess: 'Акаунти успішно імпортовано!', tImportFail: 'Валідних акаунтів у файлі не знайдено.',
+    tImportSuccess: 'Акаунти успішно імпортовано!', tImportFail: 'Доступних акаунтів у файлі не знайдено.',
     tParseFail: 'Помилка читання JSON файлу.', tBackupSuccess: 'Резервну копію успішно експортовано!',
     tCsvSuccess: 'CSV успішно експортовано!', tEmptyVault: 'Сховище порожнє!', tEnterService: 'Будь ласка, введіть назву сервісу',
-    tEnterPass: 'Будь ласка, введіть пароль', tAutoBackup: 'Запуск автоматического резервного копіювання...',
+    tEnterPass: 'Будь ласка, введіть пароль', tEnterUser: 'Будь ласка, введіть ім\'я користувача або email', tAutoBackup: 'Запуск автоматического резервного копіювання...',
     tPassInserted: 'Пароль вставлено!', tStrongGen: 'Надійний пароль згенеровано!', tAddedPrefix: 'Додано ',
     tWarnTit: 'Увага', tWeakDetect: 'Виявлено слабкий пароль', tExpDetect: 'Пароль не змінювався понад 90 днів', tNotFnd: 'Не знайдено',
     ftueTit1: "Привіт! Мене звати Clyp", ftueSub1: "Я твій новий найкращий друг у керуванні паролями. Давай усе налаштуємо за кілька кліків.",
@@ -538,15 +538,28 @@ function importData(btn) {
 }
 
 function exportVault(isAuto = false) {
-  const data = JSON.stringify({ accounts: ACCS, notes: NOTES, settings: SETT }, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `clyp-vault-${isAuto ? 'autobackup-' : ''}${new Date().toISOString().split('T')[0]}.json`;
-  a.click(); 
-  URL.revokeObjectURL(url);
-  if (!isAuto) toast('tBackupSuccess');
+  const data = { accounts: ACCS, notes: NOTES, settings: SETT };
+  const filename = `clyp-vault-${isAuto ? 'autobackup-' : ''}${new Date().toISOString().split('T')[0]}.json`;
+  
+  if (window.electronAPI && window.electronAPI.writeBackup) {
+    window.electronAPI.writeBackup(filename, data).then(success => {
+      if (success) {
+        if (!isAuto) toast('tBackupSuccess');
+      } else {
+        if (!isAuto) toast('tUpdError');
+      }
+    });
+  } else {
+    // Резервный метод для работы в обычном браузере
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    if (!isAuto) toast('tBackupSuccess');
+  }
 }
 
 function exportCSV() {
@@ -841,23 +854,51 @@ function addH(p) {
 function selIco(el, ic) { document.querySelectorAll(".iopt").forEach((o) => o.classList.remove("on")); el.classList.add("on"); selIcon = ic; document.getElementById("prev-ic").textContent = ic; }
 function togTag(el) { const a = el.dataset.a === "1"; el.dataset.a = a ? "0" : "1"; el.style.borderColor = a ? "transparent" : el.style.color; }
 function updPrev(){
-  const nm=document.getElementById('a-name').value||'Service Name';
-  const em=document.getElementById('a-email').value||'your@email.com';
-  const ct=document.getElementById('a-cat').value;
-  document.getElementById('prev-name').textContent=nm;document.getElementById('prev-em').textContent=em;
-  const tEl=document.getElementById('prev-tag');
-  if(ct){tEl.style.display='inline-block';tEl.textContent=ct;const tc=ct.toLowerCase();tEl.style.background=`var(--tag-${tc}-bg)`;tEl.style.color=`var(--tag-${tc})`;}else tEl.style.display='none';
-  let sc=10;
-  if(document.getElementById('a-name').value){sc+=20;setTip('tip-name','ok','ic-chk-tip','Service name provided');}else setTip('tip-name','wn','ic-warn-tip','Add service name');
-  if(document.getElementById('a-email').value){sc+=20;setTip('tip-em','ok','ic-chk-tip','Username added');}else setTip('tip-em','wn','ic-warn-tip','Add username or email');
-  const pw=document.getElementById('a-pass').value;
-  if(pw.length>=16){sc+=35;setTip('tip-pass','ok','ic-chk-tip','Strong password set');}else if(pw.length>=8){sc+=16;setTip('tip-pass','wn','ic-warn-tip','Password could be stronger');}else if(pw.length>0){sc+=6;setTip('tip-pass','wn','ic-warn-tip','Password is too short');}else setTip('tip-pass','wn','ic-warn-tip','Password not set');
-  if(document.getElementById('tfa-sw').classList.contains('on')){sc+=15;setTip('tip-2fa','ok','ic-chk-tip','2FA enabled');}else setTip('tip-2fa','er','ic-circle-tip','Consider enabling 2FA');
-  sc=Math.min(sc,100);document.getElementById('sc-num').textContent=sc;document.getElementById('sc-fill').style.width=sc+'%';
+  const nm = document.getElementById("a-name").value || "Service Name";
+  const em = document.getElementById("a-email").value || "your@email.com";
+  const ct = document.getElementById("a-cat").value;
+  document.getElementById("prev-name").textContent = nm;
+  document.getElementById("prev-em").textContent = em;
+  const tEl = document.getElementById("prev-tag");
+  if (ct) {
+    tEl.style.display = "inline-block";
+    tEl.textContent = ct;
+    const tc = ct.toLowerCase();
+    tEl.style.background = `var(--tag-${tc}-bg)`;
+    tEl.style.color = `var(--tag-${tc})`;
+  } else tEl.style.display = "none";
+  let sc = 10;
+  if (document.getElementById('a-name').value) { sc += 20; setTip('tip-name', 'ok', 'ic-chk-tip', 'Service name provided'); } else setTip('tip-name', 'wn', 'ic-warn-tip', 'Add service name');
+  if (document.getElementById('a-email').value) { sc += 20; setTip('tip-em', 'ok', 'ic-chk-tip', 'Username added'); } else setTip('tip-em', 'wn', 'ic-warn-tip', 'Add username or email');
   
+  // Рассчитываем реальную сложность пароля для честного Security Score
+  const pw = document.getElementById('a-pass').value;
+  let pCpx = 0; if (pw.length >= 8) pCpx++; if (pw.length >= 12) pCpx++; if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) pCpx++; if (/[0-9]/.test(pw)) pCpx++; if (/[^A-Za-z0-9]/.test(pw)) pCpx++;
+  const lv = pCpx < 2 ? 1 : pCpx < 3 ? 2 : pCpx < 5 ? 3 : 4;
+
+  if (lv === 4) { sc += 35; setTip('tip-pass', 'ok', 'ic-chk-tip', 'Strong password set'); }
+  else if (lv === 3) { sc += 25; setTip('tip-pass', 'ok', 'ic-chk-tip', 'Good password set'); }
+  else if (lv === 2) { sc += 16; setTip('tip-pass', 'wn', 'ic-warn-tip', 'Password could be stronger'); }
+  else if (pw.length > 0) { sc += 6; setTip('tip-pass', 'wn', 'ic-warn-tip', 'Password is too short'); }
+  else { setTip('tip-pass', 'wn', 'ic-warn-tip', 'Password not set'); }
+
+  if (document.getElementById('tfa-sw').classList.contains('on')) { sc += 15; setTip('tip-2fa', 'ok', 'ic-chk-tip', '2FA enabled'); } else setTip('tip-2fa', 'er', 'ic-circle-tip', 'Consider enabling 2FA');
+  sc = Math.min(sc, 100);
+  document.getElementById("sc-num").textContent = sc;
+  document.getElementById("sc-fill").style.width = sc + "%";
+
   const l = DICT[SETT.lang] || DICT.en;
-  const[scol,slbl]=sc>=85?['var(--tb)', l.strS]:sc>=65?['var(--tg)', l.strG]:sc>=40?['var(--tf)', l.strF]:['var(--ts)', l.strW];
-  document.getElementById('sc-num').style.color=scol;document.getElementById('sc-fill').style.background=scol;document.getElementById('sc-lbl').textContent=slbl;
+  const [scol, slbl] =
+    sc >= 85
+      ? ["var(--tb)", l.strS]
+      : sc >= 65
+        ? ["var(--tg)", l.strG]
+        : sc >= 40
+          ? ["var(--tf)", l.strF]
+          : ["var(--ts)", l.strW];
+  document.getElementById("sc-num").style.color = scol;
+  document.getElementById("sc-fill").style.background = scol;
+  document.getElementById("sc-lbl").textContent = slbl;
 }
 function setTip(id, ty, ic, tx) {
   const el = document.getElementById(id); if (!el) return;
@@ -896,6 +937,7 @@ function saveAcc(){
   const bkpCodes = document.getElementById("a-backup").value.trim();
 
   if (!nm) { toast("tEnterService"); return; }
+  if (!em) { toast("tEnterUser"); return; }
   if (!pw) { toast("tEnterPass"); return; }
   if (editId) {
     const idx = ACCS.findIndex((x) => x.id === editId);

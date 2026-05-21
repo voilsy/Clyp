@@ -1,7 +1,7 @@
 {
   "name": "clyp",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Secure Local Password Manager",
   "repository": {
     "type": "git",
     "url": "https://github.com/voilsy/Clyp.git"
@@ -15,7 +15,8 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Clyp",
-      "uninstallDisplayName": "Clyp"
+      "uninstallDisplayName": "Clyp",
+      "include": "build/installer.nsh"
     },
     "win": {
       "icon": "assets/Clyp.ico",

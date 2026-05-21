@@ -82,8 +82,19 @@ app.whenReady().then(() => {
   ipcMain.on('download-update', () => autoUpdater.downloadUpdate());
   ipcMain.on('install-update', () => autoUpdater.quitAndInstall());
 });
-// ...
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
+});
+
+ipcMain.handle('write-backup', async (event, { filename, data }) => {
+  try {
+    // Формируем путь строго в папке, где лежит исполняемый .exe файл программы
+    const backupPath = path.join(path.dirname(app.getPath('exe')), filename);
+    fs.writeFileSync(backupPath, JSON.stringify(data, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    console.error('Backup error:', err);
+    return false;
+  }
 });

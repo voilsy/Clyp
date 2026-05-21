@@ -5,16 +5,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   maximizeWindow: () => ipcRenderer.send('window-max'),
   closeWindow: () => ipcRenderer.send('window-close'),
   
-  // Управление масштабом интерфейса
   setZoom: (level) => webFrame.setZoomFactor(level),
   
-  // Сохранение и загрузка данных
   saveData: (data) => ipcRenderer.invoke('save-data', data),
   loadData: () => ipcRenderer.invoke('load-data'),
+  writeBackup: (filename, data) => ipcRenderer.invoke('write-backup', { filename, data }),
 
-  getVersion: () => ipcRenderer.invoke('get-version'), // <-- Добавить
-  downloadUpdate: () => ipcRenderer.send('download-update'), // <-- Добавить
-
+  getVersion: () => ipcRenderer.invoke('get-version'),
+  downloadUpdate: () => ipcRenderer.send('download-update'),
   checkForUpdates: () => ipcRenderer.send('check-for-updates'),
   installUpdate: () => ipcRenderer.send('install-update'),
   onUpdateStatus: (callback) => ipcRenderer.on('update-status', (_event, data) => callback(data)),
