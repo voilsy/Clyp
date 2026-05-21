@@ -12,10 +12,14 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "productName": "Clyp",
+      "shortcutName": "Clyp",
+      "uninstallDisplayName": "Clyp"
     },
     "win": {
-      "icon": "assets/Clyp.ico"
+      "icon": "assets/Clyp.ico",
+      "artifactName": "${productName}.${ext}"
     },
     "files": [
     "**/*",
