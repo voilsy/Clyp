@@ -868,3 +868,32 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 .spinning svg {
   animation: spin 1s linear infinite;
 }
+
+/* ═══════════════════════════════════════
+   UPDATE NOTIFICATION BADGE
+═══════════════════════════════════════ */
+.has-update { position: relative; }
+.has-update::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent); /* Синий/Акцентный цвет выглядит спокойнее и современнее красного */
+  border-radius: 50%;
+  z-index: 10;
+  animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Обводка точки под цвет сайдбара */
+.sb .has-update::after { 
+  box-shadow: 0 0 0 2px var(--bg-side); 
+}
+
+/* Обводка точки для вкладки внутри настроек (позицию чуть смещаем) */
+.sni.has-update::after { 
+  box-shadow: 0 0 0 2px var(--bg-side); 
+  top: 13px; 
+  right: 14px; 
+}

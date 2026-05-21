@@ -1427,18 +1427,8 @@ const SS = {
 
     <div class="slbl" style="margin-top:16px">${l.suRel}</div>
     <div class="scard">
-      <div id="release-notes-container" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-        <div style="border-bottom:none;padding-bottom:0;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-            <span style="font-size:12px;font-weight:800;color:var(--tx1)">v1.0.0</span>
-            <span class="bdg" style="background:var(--ok-bg);color:var(--ok);display:flex;align-items:center;gap:4px;">
-              <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg>Current
-            </span>
-            <span style="font-size:10px;color:var(--tx3);font-weight:600;margin-left:auto">Initial Release</span>
-          </div>
-          <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.6;position:relative">· Clyp Password Manager is now live!</div>
-          <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.6;position:relative">· Built-in authenticator (TOTP) and generator.</div>
-        </div>
+      <div id="release-notes-container" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:50px;justify-content:center;">
+        <div style="font-size:11px;color:var(--tx3);font-weight:600;text-align:center;">Загрузка данных релиза...</div>
       </div>
     </div>`;
   }
@@ -1454,28 +1444,56 @@ function rendSett() {
       const tit = document.getElementById('upd-title');
       if(tit) tit.textContent = `Clyp v${v}`;
       
-      if (SETT.releaseVersion && SETT.releaseNotes) {
-        const relContainer = document.getElementById('release-notes-container');
-        if (relContainer) {
-          const cleanNotes = SETT.releaseNotes
-            .split('\n')
-            .filter(line => line.trim() !== '')
-            .join('<br style="content: \'\'; display: block; margin: 4px 0;">');
+      const relContainer = document.getElementById('release-notes-container');
+      if (!relContainer) return;
 
-          const isCurrent = (SETT.releaseVersion === v);
-          
-          relContainer.innerHTML = `
-            <div style="padding-bottom: 2px;">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                <span style="font-size:12px;font-weight:800;color:var(--tx1)">v${SETT.releaseVersion}</span>
-                <span class="bdg" style="background:var(--${isCurrent ? 'ok-bg' : 'accent-lt'});color:var(--${isCurrent ? 'ok' : 'accent'});display:flex;align-items:center;gap:4px;padding:2px 6px;">
-                  <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;"><use href="#${isCurrent ? 'ic-chk-tip' : 'ic-inner-upd'}"/></svg>${isCurrent ? 'Current' : 'New Release'}
-                </span>
-              </div>
-              <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.4;letter-spacing:0.01em;" class="gh-notes">${cleanNotes}</div>
-            </div>`;
-        }
+      // Внутренняя функция для красивой отрисовки заметок
+      const drawNotes = (relVer, relNotes) => {
+        if (!relVer || !relNotes) return;
+        const cleanNotes = relNotes.split('\n').filter(line => line.trim() !== '').join('<br style="content: \'\'; display: block; margin: 4px 0;">');
+        const isCurrent = (relVer === v);
+        
+        relContainer.innerHTML = `
+          <div style="padding-bottom: 2px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <span style="font-size:12px;font-weight:800;color:var(--tx1)">v${relVer}</span>
+              <span class="bdg" style="background:var(--${isCurrent ? 'ok-bg' : 'accent-lt'});color:var(--${isCurrent ? 'ok' : 'accent'});display:flex;align-items:center;gap:4px;padding:2px 6px;">
+                <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;"><use href="#${isCurrent ? 'ic-chk-tip' : 'ic-inner-upd'}"/></svg>${isCurrent ? 'Current' : 'New Release'}
+              </span>
+            </div>
+            <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.4;letter-spacing:0.01em;" class="gh-notes">${cleanNotes}</div>
+          </div>`;
+      };
+
+      // 1. Сначала мгновенно показываем то, что сохранено локально (оффлайн кэш)
+      if (SETT.releaseVersion && SETT.releaseNotes) {
+        drawNotes(SETT.releaseVersion, SETT.releaseNotes);
       }
+
+      // 2. Делаем независимый тихий запрос напрямую в GitHub API
+      fetch('https://api.github.com/repos/voilsy/Clyp/releases/latest')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.tag_name) {
+            // GitHub отдает tag_name в формате "v1.1.1", отрезаем "v"
+            const ghVersion = data.tag_name.replace('v', '');
+            const ghNotes = data.body;
+            
+            // Перерисовываем с самыми свежими данными
+            drawNotes(ghVersion, ghNotes);
+            
+            // Сохраняем в память и на диск, чтобы при отсутствии интернета всё работало
+            SETT.releaseVersion = ghVersion;
+            SETT.releaseNotes = ghNotes;
+            syncData();
+          }
+        })
+        .catch(err => {
+          // Если нет интернета и нет кэша
+          if (!SETT.releaseVersion) {
+            relContainer.innerHTML = `<div style="font-size:11px;color:var(--tx3);text-align:center;font-weight:600;">Нет подключения к GitHub</div>`;
+          }
+        });
     });
   }
 }
@@ -1559,12 +1577,10 @@ if (window.electronAPI) {
       const pct = document.getElementById('upd-pct');
       const l = DICT[SETT.lang] || DICT.en;
 
-      if (btn) btn.classList.remove('spinning');
+      const settNavBtn = document.querySelector('.sb .ni[data-page="4"]');
+      const updTabBtn = document.querySelector('.sni[data-tab="updates"]');
 
-      if (data.status === 'ready' && updState === 'background-checking') {
-        window.electronAPI.installUpdate();
-        return;
-      }
+      if (btn) btn.classList.remove('spinning');
 
       if (!log) return; 
 
@@ -1572,6 +1588,9 @@ if (window.electronAPI) {
       log.scrollTop = log.scrollHeight; 
 
       if (data.status === 'available') {
+        if (settNavBtn) settNavBtn.classList.add('has-update');
+        if (updTabBtn) updTabBtn.classList.add('has-update');
+        
         SETT.releaseNotes = data.notes || '';
         SETT.releaseVersion = data.version || '';
         syncData();
@@ -1617,6 +1636,9 @@ if (window.electronAPI) {
         }
       } 
       else if (data.status === 'latest') {
+        if (settNavBtn) settNavBtn.classList.remove('has-update');
+        if (updTabBtn) updTabBtn.classList.remove('has-update');
+
         updState = 'idle';
         if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = l.suChk; }
         badge.style.background = 'var(--ok-bg)';
@@ -1627,6 +1649,9 @@ if (window.electronAPI) {
         if (fill) { fill.style.width = '100%'; fill.style.background = 'var(--ok)'; }
       } 
       else if (data.status === 'ready') {
+        if (settNavBtn) settNavBtn.classList.add('has-update');
+        if (updTabBtn) updTabBtn.classList.add('has-update');
+
         updState = 'ready';
         if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = 'Install & Restart'; btn.style.background = 'var(--ok)'; }
         badge.style.background = 'var(--ok-bg)';
@@ -1636,6 +1661,9 @@ if (window.electronAPI) {
         if (pct) pct.style.display = 'none';
       } 
       else if (data.status === 'error') {
+        if (settNavBtn) settNavBtn.classList.remove('has-update');
+        if (updTabBtn) updTabBtn.classList.remove('has-update');
+
         updState = 'idle';
         if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = l.suChk; }
         badge.style.background = 'var(--er-bg)';
