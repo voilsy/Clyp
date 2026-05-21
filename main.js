@@ -27,7 +27,7 @@ function createWindow () {
     width: 1180, height: 760, minWidth: 850, minHeight: 600,
     autoHideMenuBar: true, frame: false, transparent: true, center: true,
     icon: path.join(__dirname, 'assets/Clyp.ico'),
-    webPreferences: { nodeIntegration: false, contextIsolation: true, preload: path.join(__dirname, 'preload.js'), devTools: false } // Выключаем devTools
+    webPreferences: { nodeIntegration: false, contextIsolation: true, preload: path.join(__dirname, 'preload.js'), devTools: true } // Выключаем devTools
   });
 
   mainWindow.loadFile('index.html');

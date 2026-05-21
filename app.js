@@ -1528,8 +1528,7 @@ function runUpdateCheck() {
 //  IPC LISTENERS (Слушаем ответы от GitHub)
 // ═══════════════════════════════════════
 if (window.electronAPI) {
-  
-  // ИСПРАВЛЕНО: Один единственный чистый слушатель изменения статусов (без дубликатов)
+  // ИСПРАВЛЕННЫЙ И БЕЗОПАСНЫЙ СЛУШАТЕЛЬ СТАТУСОВ (v1.0.1 Patch)
   if (window.electronAPI.onUpdateStatus) {
     window.electronAPI.onUpdateStatus((data) => {
       const log = document.getElementById('upd-log');
@@ -1541,49 +1540,60 @@ if (window.electronAPI) {
       const pct = document.getElementById('upd-pct');
       const l = DICT[SETT.lang] || DICT.en;
 
-      // Если мы не на вкладке обновлений, но пришло автообновление в фоне — обрабатываем тихо
+      // Убираем вращение кнопки при любом ответе
+      if (btn) btn.classList.remove('spinning');
+
+      // Фоновое тихое обновление
       if (data.status === 'ready' && updState === 'background-checking') {
-        window.electronAPI.installUpdate(); // Автоматически накатываем и перезапускаем
+        window.electronAPI.installUpdate();
         return;
       }
 
       if (!log) return; 
 
-      // Выводим логи строго по строчкам (\n)
+      // Выводим строчки лога
       log.textContent += '> ' + data.msg + '\n';
       log.scrollTop = log.scrollHeight; 
 
       if (data.status === 'available') {
-        // Загрузка динамических Release Notes с GitHub
+        // Динамическая подстановка Release Notes БЕЗ поломки верхнего интерфейса
         const relContainer = document.getElementById('release-notes-container');
         if (relContainer) {
-          // Чистим контейнер от старого локального Changelog и вставляем актуальный с GitHub
+          // Форматируем текст заметок: убираем лишние пустые строки и делаем отступы аккуратными
+          const cleanNotes = data.notes 
+            ? data.notes.split('\n').filter(line => line.trim() !== '').join('<br style="content: \'\'; display: block; margin: 4px 0;">')
+            : 'No release details provided.';
+
           relContainer.innerHTML = `
-            <div style="border-bottom:none;padding-bottom:0;">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <div style="padding-bottom: 2px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                 <span style="font-size:12px;font-weight:800;color:var(--tx1)">v${data.version}</span>
-                <span class="bdg" style="background:var(--accent-lt);color:var(--accent);display:flex;align-items:center;gap:4px;">
-                  <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-inner-upd"/></svg>New Release
+                <span class="bdg" style="background:var(--accent-lt);color:var(--accent);display:flex;align-items:center;gap:4px;padding:2px 6px;">
+                  <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;"><use href="#ic-inner-upd"/></svg>New Release
                 </span>
               </div>
-              <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.6;white-space:pre-wrap;" class="gh-notes">${data.notes || 'No release details provided.'}</div>
+              <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.4;letter-spacing:0.01em;" class="gh-notes">${cleanNotes}</div>
             </div>`;
         }
+
+        // Показываем панель прогресса (убеждаемся, что всё на месте)
+        const updPanel = document.querySelector('.upd-panel');
+        if (updPanel) updPanel.style.display = 'block'; 
 
         if (SETT.autoUpdate) {
           window.electronAPI.downloadUpdate();
           updState = 'downloading';
           pLbl.textContent = l.tUpdAvailable;
-          pct.style.display = 'inline'; // Показываем проценты при скачивании
+          if (pct) pct.style.display = 'inline';
         } else {
-          // Если автообновление выключено, останавливаем анимацию и даем скачать вручную
           updState = 'ready-to-download';
-          btn.disabled = false;
-          btn.classList.remove('spinning');
-          lbl.style.display = 'inline';
-          lbl.textContent = 'Download';
+          if (btn) {
+            btn.disabled = false;
+            lbl.style.display = 'inline';
+            lbl.textContent = 'Download';
+          }
           pLbl.textContent = l.tUpdPending;
-          pct.style.display = 'none';
+          if (pct) pct.style.display = 'none';
           badge.style.background = 'var(--wn-bg)';
           badge.style.color = 'var(--wn)';
           badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-warn-tip"/></svg> Available`;
@@ -1591,47 +1601,35 @@ if (window.electronAPI) {
       } 
       else if (data.status === 'latest') {
         updState = 'idle';
-        btn.disabled = false;
-        btn.classList.remove('spinning');
-        lbl.style.display = 'inline';
-        lbl.textContent = l.suChk; // Возвращаем исходный текст "Проверить обновления"
+        if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = l.suChk; }
         badge.style.background = 'var(--ok-bg)';
         badge.style.color = 'var(--ok)';
         badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg> Up to date`;
         pLbl.textContent = l.tUpdLatest;
-        pct.style.display = 'none';
-        fill.style.width = '100%';
-        fill.style.background = 'var(--ok)';
+        if (pct) pct.style.display = 'none';
+        if (fill) { fill.style.width = '100%'; fill.style.background = 'var(--ok)'; }
       } 
       else if (data.status === 'ready') {
         updState = 'ready';
-        btn.disabled = false;
-        btn.classList.remove('spinning');
-        lbl.style.display = 'inline';
-        lbl.textContent = 'Install & Restart';
-        btn.style.background = 'var(--ok)';
+        if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = 'Install & Restart'; btn.style.background = 'var(--ok)'; }
         badge.style.background = 'var(--ok-bg)';
         badge.style.color = 'var(--ok)';
         badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg> Downloaded`;
         pLbl.textContent = l.tUpdReady;
-        pct.style.display = 'none';
+        if (pct) pct.style.display = 'none';
       } 
       else if (data.status === 'error') {
         updState = 'idle';
-        btn.disabled = false;
-        btn.classList.remove('spinning');
-        lbl.style.display = 'inline';
-        lbl.textContent = l.suChk;
+        if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = l.suChk; }
         badge.style.background = 'var(--er-bg)';
         badge.style.color = 'var(--er)';
         badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-circle-tip"/></svg> Error`;
         pLbl.textContent = l.tUpdError;
-        pct.style.display = 'none';
-        fill.style.background = 'var(--er)';
+        if (pct) pct.style.display = 'none';
+        if (fill) fill.style.background = 'var(--er)';
       }
     });
   }
-
   // Слушаем реальный прогресс скачивания с серверов GitHub
   if (window.electronAPI.onUpdateProgress) {
     window.electronAPI.onUpdateProgress((percent) => {
