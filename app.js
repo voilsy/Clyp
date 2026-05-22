@@ -109,7 +109,7 @@ const DICT = {
     svExpC: 'Export to CSV', svExpCS: '⚠ Passwords will be unencrypted', svExpCB: 'Export CSV',
     svDan: 'Danger Zone', svDel: 'Delete All Data', svDelS: 'Permanently wipe all accounts and notes', svDelB: 'Erase Vault',
     suTit: 'Updates', suChk: 'Check for Updates', suAut: 'Automatic Updates', suAutS: 'Download and install updates automatically', suRel: 'Release Notes',
-    // Системные уведомления и Empty States
+    svResB: 'Restore Backup', svResBS: 'Restore from a Clyp JSON backup', svResBtn: 'Restore', tRestoreSuccess: 'Backup restored successfully!',
     tSaved: 'Settings saved successfully!', tDiscarded: 'Changes discarded', tAccentUpdated: 'Accent color updated',
     tFontUpdated: 'Interface size updated', tDateSaved: 'Date format saved', tNoAcc: 'No accounts found',
     tNoNotes: 'No notes found', tCopied: 'Copied!', tPassCopied: 'Password copied!', tEmailCopied: 'Email copied!',
@@ -168,7 +168,7 @@ const DICT = {
     svExpC: 'Экспорт в CSV', svExpCS: '⚠ Пароли будут не зашифрованы', svExpCB: 'Export CSV',
     svDan: 'Опасная зона', svDel: 'Удалить все данные', svDelS: 'Безвозвратно стереть все аккаунты и заметки', svDelB: 'Стереть хранилище',
     suTit: 'Обновления', suChk: 'Проверить обновления', suAut: 'Автообновление', suAutS: 'Автоматически устанавливать обновления', suRel: 'Список изменений',
-    // Системные уведомления и Empty States
+    svResB: 'Восстановление', svResBS: 'Восстановить данные из резервной копии Clyp', svResBtn: 'Восстановить', tRestoreSuccess: 'Данные успешно восстановлена!',
     tSaved: 'Настройки успешно сохранены!', tDiscarded: 'Изменения сброшены', tAccentUpdated: 'Акцентный цвет обновлен',
     tFontUpdated: 'Размер интерфейса обновлен', tDateSaved: 'Формат даты сохранен', tNoAcc: 'Аккаунтов не найдено',
     tNoNotes: 'Заметки не найдено', tCopied: 'Скопировано!', tPassCopied: 'Пароль скопирован!', tEmailCopied: 'Email скопирован!',
@@ -227,7 +227,7 @@ const DICT = {
     svExpC: 'Експорт в CSV', svExpCS: '⚠ Паролі будуть незашифровані', svExpCB: 'Експорт CSV',
     svDan: 'Небезпечна зона', svDel: 'Видалити всі дані', svDelS: 'Назавжди стерти всі акаунти та нотатки', svDelB: 'Стерти сховище',
     suTit: 'Оновлення', suChk: 'Перевірити оновлення', suAut: 'Автооновлення', suAutS: 'Автоматично встановлювати оновлення', suRel: 'Список змін',
-    // Системные уведомления и Empty States
+    svResB: 'Відновлення', svResBS: 'Відновити дані з резервної копії Clyp', svResBtn: 'Відновити', tRestoreSuccess: 'Дані успішно відновлено!',
     tSaved: 'Налаштування успішно збережено!', tDiscarded: 'Зміни скинуто', tAccentUpdated: 'Акцентний колір оновлено',
     tFontUpdated: 'Розмір інтерфейсу оновлено', tDateSaved: 'Формат дати збережено', tNoAcc: 'Акаунтів не знайдено',
     tNoNotes: 'Нотаток не знайдено', tCopied: 'Скопійовано!', tPassCopied: 'Пароль скопійовано!', tEmailCopied: 'Email скопійовано!',
@@ -537,8 +537,67 @@ function importData(btn) {
   input.click();
 }
 
+function restoreBackup(btn) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    let origHTML = "";
+    const l = DICT[SETT.lang] || DICT.en;
+    if (btn) {
+      origHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span style="display:flex;align-items:center;justify-content:center;"><svg viewBox="25 25 50 50" style="width:14px;height:14px;margin-right:6px;animation:ring-rotate 2s linear infinite;"><circle stroke="currentColor" stroke-width="5" stroke-linecap="round" cx="50" cy="50" r="20" fill="none" style="stroke-dasharray:1,200;stroke-dashoffset:0;animation:ring-dash 1.5s ease-in-out infinite;"></circle></svg>...</span>`;
+    }
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      setTimeout(() => {
+        if (btn) { btn.innerHTML = origHTML; btn.disabled = false; }
+        try {
+          const data = JSON.parse(ev.target.result);
+          
+          // Проверяем, что это бекап Clyp (поддерживаем и старый и новый формат)
+          if (data.ACCS || data.accounts) {
+            ACCS = data.ACCS || data.accounts || [];
+            NOTES = data.NOTES || data.notes || [];
+            if (data.SETT || data.settings) {
+              SETT = { ...SETT, ...(data.SETT || data.settings) };
+              TEMP_SETT = { ...SETT };
+            }
+            
+            // Восстанавливаем ID или генерируем новые
+            nid = data.nid || (ACCS.length > 0 ? Math.max(...ACCS.map(a => a.id)) + 1 : 1);
+            nnid = data.nnid || (NOTES.length > 0 ? Math.max(...NOTES.map(n => n.id)) + 1 : 1);
+            
+            // Перезагружаем интерфейс
+            syncData();
+            applySettingsState(SETT);
+            
+            if (ACCS.length > 0) { selAcc(ACCS[0].id); } else { clearAccDet(); }
+            if (NOTES.length > 0) { selN(NOTES[0].id); } else { toggleNoteEditor(false); }
+            if (document.getElementById('pg4').classList.contains('on')) rendSett();
+
+            toast('tRestoreSuccess');
+          } else {
+            toast('tParseFail');
+          }
+        } catch(err) {
+          toast('tParseFail');
+        }
+      }, 600);
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
 function exportVault(isAuto = false) {
-  const data = { accounts: ACCS, notes: NOTES, settings: SETT };
+  const data = { SETT: SETT, ACCS: ACCS, NOTES: NOTES, nid: nid, nnid: nnid };
   const filename = `clyp-vault-${isAuto ? 'autobackup-' : ''}${new Date().toISOString().split('T')[0]}.json`;
   
   if (window.electronAPI && window.electronAPI.writeBackup) {
@@ -1384,6 +1443,7 @@ const SS = {
     <div class="slbl" style="margin-top:4px">${l.svIE}</div>
     <div class="scard">
       <div class="srow"><div class="sico" style="background:var(--accent-lt); color:var(--accent)"><svg viewBox="0 0 24 24"><use href="#ic-inner-imp"/></svg></div><div style="flex:1"><div class="slbl2">${l.svImpC}</div><div class="ssub">${l.svImpCS}</div></div><button class="btn-s sctrl" style="height:29px;font-size:11px" data-action="importData">${l.svImpB}</button></div>
+      <div class="srow"><div class="sico" style="background:var(--ok-bg); color:var(--ok)"><svg viewBox="0 0 24 24"><use href="#ic-inner-sync"/></svg></div><div style="flex:1"><div class="slbl2">${l.svResB}</div><div class="ssub">${l.svResBS}</div></div><button class="btn-s sctrl" style="height:29px;font-size:11px" data-action="restoreBackup">${l.svResBtn}</button></div>
       <div class="srow"><div class="sico" style="background:var(--wn-bg); color:var(--wn)"><svg viewBox="0 0 24 24"><use href="#ic-inner-backup"/></svg></div><div style="flex:1"><div class="slbl2">${l.svExpV}</div><div class="ssub">${l.svExpVS}</div></div><button class="btn-s sctrl" style="height:29px;font-size:11px" data-action="exportVault">${l.svExpB}</button></div>
       <div class="srow"><div class="sico" style="background:var(--wn-bg); color:var(--wn)"><svg viewBox="0 0 24 24"><use href="#ic-inner-backup"/></svg></div><div style="flex:1"><div class="slbl2">${l.svExpC}</div><div class="ssub" style="color:var(--er)">${l.svExpCS}</div></div><button class="btn-d sctrl" style="height:29px;font-size:11px" data-action="exportCSV">${l.svExpCB}</button></div>
     </div>
@@ -1844,6 +1904,7 @@ document.addEventListener('click', (e) => {
   if (action === 'discardSettings') discardSettings();
   if (action === 'toggleCustomMenu') toggleCustomMenu(target.dataset.target, e);
   if (action === 'importData') importData(target);
+  if (action === 'restoreBackup') restoreBackup(target);
   if (action === 'exportVault') exportVault();
   if (action === 'exportCSV') exportCSV();
   if (action === 'eraseVault') eraseVault();
