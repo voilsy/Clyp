@@ -25,7 +25,7 @@ let nnid=6, selNid=1, nSaveT=null, nFilt='all';
 let curSort = 'az';
 
 // --- ЛОГИКА СОХРАНЕНИЯ И ПРИМЕНЕНИЯ ---
-let SETT = { theme: 'system', color: 'blue', font: 'Regular', date: 'DD.MM.YYYY', lang: 'en', autoBackup: false, passExpiry: true, weakWarn: true, autoUpdate: true, lastBackup: 0, releaseNotes: '', releaseVersion: ''};
+let SETT = { theme: 'system', color: 'blue', font: 'Regular', date: 'DD.MM.YYYY', lang: 'en', autoBackup: true, passExpiry: true, weakWarn: true, autoUpdate: false, lastBackup: 0, releaseNotes: '', releaseVersion: ''};
 let TEMP_SETT = { ...SETT };
 
 // ГЛАВНАЯ ФУНКЦИЯ СОХРАНЕНИЯ: собирает все массивы и отправляет на жесткий диск
@@ -965,12 +965,19 @@ function setTip(id, ty, ic, tx) {
   el.innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;flex-shrink:0;margin-top:1px;"><use href="#${ic}"/></svg><span>${tx}</span>`;
 }
 function chkPS(v) {
-  let s = 0; if (v.length >= 8) s++; if (v.length >= 12) s++; if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++; if (/[0-9]/.test(v)) s++; if (/[^A-Za-z0-9]/.test(v)) s++;
+  let s = 0;
+  if (v.length >= 8) s++;
+  if (v.length >= 12) s++;
+  if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++;
+  if (/[0-9]/.test(v)) s++;
+  if (/[^A-Za-z0-9]/.test(v)) s++;
   const lv = s < 2 ? 1 : s < 3 ? 2 : s < 5 ? 3 : 4;
   const cs = ["w", "f", "g", "s"];
   for (let i = 1; i <= 4; i++) {
-    const el = document.getElementById("as" + i); if (!el) return;
-    el.className = "strseg"; if (i <= lv) el.classList.add(cs[lv - 1]);
+    const el = document.getElementById("as" + i);
+    if (!el) return;
+    el.className = "strseg";
+    if (i <= lv) el.classList.add(cs[lv - 1]);
   }
   updPrev();
 }
@@ -1861,6 +1868,7 @@ document.addEventListener('click', (e) => {
   if (action === 'togPV') togPV(target.dataset.target);
   if (action === 'setF') setF(target.dataset.filter, target);
   if (action === 'cpDE') cpDE();
+  if (action === 'togDP') togDP();
   if (action === 'cpDP') cpDP();
   if (action === 'editA') editA();
   if (action === 'delA') delA();
