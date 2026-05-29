@@ -1191,7 +1191,20 @@ function selAcc(id) {
 }
 function getF(src) { const s = src || ACCS; return fMode === "all" ? s : s.filter((a) => a.tc === fMode); }
 function setF(f, btn) { fMode = f; document.querySelectorAll(".fchip").forEach((c) => c.classList.remove("on")); btn.classList.add("on"); rendA(getF()); }
-function filterA(q) { rendA(getF(ACCS.filter((a) => a.name.toLowerCase().includes(q.toLowerCase()) || a.email.includes(q.toLowerCase())))); }
+function filterA(q) { 
+  const query = q.toLowerCase();
+  
+  rendA(getF(ACCS.filter((a) => {
+    const matchName = a.name.toLowerCase().includes(query);
+    
+    // TODO: In the future, we can add a check for a variable (e.g., SETT.searchByLogin)
+    // const matchEmail = a.email.toLowerCase().includes(query);
+    // return matchName || matchEmail;
+    
+    // For now, we're searching strictly by service name
+    return matchName; 
+  }))); 
+}
 function sortA(m){
   curSort = m;
   if(m==='az')ACCS.sort((a,b)=>a.name.localeCompare(b.name));
@@ -2117,7 +2130,7 @@ async function initApp() {
         launchMainApp();
       }
     }, 500); 
-  }, 3000); 
+  }, 1500);
 }
 
 function launchMainApp() {

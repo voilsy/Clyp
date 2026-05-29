@@ -22,13 +22,18 @@ ipcMain.handle('get-version', () => app.getVersion());
 
 function createWindow () {
   mainWindow = new BrowserWindow({
-    width: 1180, height: 760, minWidth: 850, minHeight: 600,
+    width: 1260, height: 812, minWidth: 850, minHeight: 600,
     autoHideMenuBar: true, frame: false, transparent: true, center: true,
     icon: path.join(__dirname, 'assets/Clyp.ico'),
+    show: false,
     webPreferences: { nodeIntegration: false, contextIsolation: true, preload: path.join(__dirname, 'preload.js'), devTools: true }
   });
 
   mainWindow.loadFile('index.html');
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     require('electron').shell.openExternal(url);
