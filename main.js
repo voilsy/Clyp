@@ -25,7 +25,7 @@ function createWindow () {
     autoHideMenuBar: true, frame: false, transparent: true, center: true,
     icon: path.join(__dirname, 'assets/Clyp.ico'),
     show: false,
-    webPreferences: { nodeIntegration: false, contextIsolation: true, preload: path.join(__dirname, 'preload.js'), devTools: true }
+    webPreferences: { nodeIntegration: false, contextIsolation: true, preload: path.join(__dirname, 'preload.js'), devTools: false }
   });
 
   mainWindow.loadFile('index.html');
