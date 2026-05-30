@@ -14,8 +14,8 @@ let ACCS=[
   {id:1,icon:'🎮',name:'Steam',email:'alex@gmail.com',tag:'Game',tc:'game',url:'store.steampowered.com',added:'2026-03-15T12:00:00.000Z',changed:'2026-05-10T12:00:00.000Z',pass:'K7#mQ2!xLp@9vN3w',has2fa:true,lastUsed: Date.now() - 10000},
   {id:2,icon:'🛒',name:'Amazon',email:'alex@gmail.com',tag:'Retail',tc:'retail',url:'amazon.com',added:'2026-01-05T12:00:00.000Z',changed:'2026-01-05T12:00:00.000Z',pass:'mXp@3!kLqR9z',has2fa:false,lastUsed: Date.now() - 50000},
 ];
-let nid=11, selId=1, passVis=false, gMode=0, fMode='all', editId=null, selIcon='🔑'; let backupVis = false; // Хранит статус: скрыты или показаны резервные коды в просмотре
-let curGenEntropy = 0; // Хранит энтропию текущего сгенерированного пароля
+let nid=11, selId=1, passVis=false, gMode=0, fMode='all', editId=null, selIcon='🔑'; let backupVis = false;
+let curGenEntropy = 0;
 
 let NOTES=[
   {id:1,title:'AWS Root Credentials',body:'Root access key ID: AKIA...\nSecret: stored in 1password',date:'2025-05-02T12:00:00.000Z',tags:['Work','Credentials'],pinned:true},
@@ -24,11 +24,9 @@ let NOTES=[
 let nnid=6, selNid=1, nSaveT=null, nFilt='all';
 let curSort = 'az';
 
-// --- ЛОГИКА СОХРАНЕНИЯ И ПРИМЕНЕНИЯ ---
 let SETT = { theme: 'system', color: 'blue', font: 'Regular', date: 'DD.MM.YYYY', lang: 'en', autoBackup: true, passExpiry: true, weakWarn: true, autoUpdate: false, lastBackup: 0, releaseNotes: '', releaseVersion: ''};
 let TEMP_SETT = { ...SETT };
 
-// ГЛАВНАЯ ФУНКЦИЯ СОХРАНЕНИЯ: собирает все массивы и отправляет на жесткий диск
 function syncData() {
   if (window.electronAPI) {
     window.electronAPI.saveData({
@@ -327,7 +325,7 @@ function updateLanguage() {
   const sv = document.querySelector('#sort-val'); if(sv) sv.textContent = svMap[curSort] || l.acSort1;
   const acSlbl = document.querySelectorAll('#pg2 .det-body .slbl');
   if(acSlbl[0]) acSlbl[0].textContent = l.acL1; if(acSlbl[1]) acSlbl[1].textContent = l.acL2; if(acSlbl[2]) acSlbl[2].textContent = l.acL3;
-// ИСПРАВЛЕНИЕ: Прямой перевод левых колонок в просмотре аккаунта
+
   const fkU = document.getElementById('lbl-view-user'); if (fkU) fkU.textContent = l.acU;
   const fkP = document.getElementById('lbl-view-pass'); if (fkP) fkP.textContent = l.acP;
   const fkW = document.getElementById('lbl-view-web'); if (fkW) fkW.textContent = l.acW;
@@ -336,7 +334,7 @@ function updateLanguage() {
   const fkQ = document.getElementById('lbl-view-unq'); if (fkQ) fkQ.textContent = l.acUnique;
   const detb = document.querySelectorAll(".det-hero .btn-s, .det-hero .btn-d");
   if(detb[0]) detb[0].lastChild.textContent = l.acCEm; if(detb[1]) detb[1].lastChild.textContent = l.acCPw; if(detb[2]) detb[2].lastChild.textContent = l.acEdit; if(detb[3]) detb[3].lastChild.textContent = l.acDel;
-  // ИСПРАВЛЕНИЕ: Прямой и надежный перевод заголовков 2FA карточки по ID элементов
+
   const tfaTit = document.getElementById('lbl-tfa-title'); if (tfaTit) tfaTit.textContent = l.acL2;
   const tcod = document.getElementById('lbl-view-totp'); if (tcod) tcod.textContent = l.acTotp;
   const tref = document.getElementById('lbl-view-refreshes'); if (tref) tref.textContent = l.acRef;
@@ -358,7 +356,6 @@ function updateLanguage() {
   if(snis[1]) snis[1].lastChild.textContent = l.ssVlt; 
   if(snis[2]) snis[2].lastChild.textContent = l.ssUpd;
 
-  // ИСПРАВЛЕНИЕ: Мгновенно переводим динамический статус генератора при смене языка
   updStr(curGenEntropy, 'ss1', 'ss2', 'ss3', 'ss4', 'stxt');
   updCrack(curGenEntropy);
 
@@ -377,23 +374,27 @@ function applySettingsState(s) {
   if (typeof rendN === 'function') rendN();
   if (selId) selAcc(selId);
 }
+
 function setLang(c, el) {
   TEMP_SETT.lang = c;
   document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('on'));
   if(el) el.classList.add('on');
 }
+
 function saveSettings() {
   SETT = { ...TEMP_SETT };
   applySettingsState(SETT);
   toast('tSaved');
   syncData();
 }
+
 function discardSettings(silent) {
   TEMP_SETT = { ...SETT };
   applySettingsState(SETT);
   if (document.getElementById('pg4').classList.contains('on')) rendSett();
   if (!silent) toast('tDiscarded');
 }
+
 function setAccentColor(key, skipTemp) {
   if (!skipTemp) TEMP_SETT.color = key;
   const p = PALETTES[key];
@@ -407,6 +408,7 @@ function setAccentColor(key, skipTemp) {
     b.style.boxShadow = b.dataset.c === key ? '0 0 0 2px var(--bg-card), 0 0 0 3px var(--accent)' : '0 0 0 2px var(--bg-card), 0 0 0 0 transparent';
   });
 }
+
 function applyTheme(v, skipTemp) {
   if (!skipTemp) TEMP_SETT.theme = v;
   const isDark = v === 'dark' || (v === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -414,24 +416,24 @@ function applyTheme(v, skipTemp) {
   document.getElementById('ic-sun').style.display = isDark ? 'none' : 'block';
   document.getElementById('ic-moon').style.display = isDark ? 'block' : 'none';
 }
+
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   if (SETT.theme === 'system') applyTheme('system', true);
 });
+
 function setFontSize(size, skipTemp) {
   if (!skipTemp) TEMP_SETT.font = size;
-  // Базовый масштаб = 1 (100%)
   let zoomLevel = 1;
   if (size === 'Large') zoomLevel = 1.1;       // 110%
   if (size === 'Extra Large') zoomLevel = 1.25; // 125%
 
-  // Если мы в Electron, используем идеальный нативный зум
   if (window.electronAPI && window.electronAPI.setZoom) {
     window.electronAPI.setZoom(zoomLevel);
   } else {
-    // Резервный вариант для работы просто в браузере
     document.body.style.zoom = zoomLevel; 
   }
 }
+
 function setDateFormat(fmt) {
   TEMP_SETT.date = fmt;
 }
@@ -465,11 +467,10 @@ function importData(btn) {
           btn.disabled = false;
         }
 
-        // Находим встроенный абсолютный контейнер статуса
         const statusEl = btn ? btn.parentElement.querySelector('.import-status') : null;
         if (statusEl) {
           statusEl.style.display = 'flex';
-          // Микро-таймаут для запуска CSS-перехода
+
           setTimeout(() => {
             statusEl.style.opacity = '1';
             statusEl.style.transform = 'translateY(0)';
@@ -519,7 +520,6 @@ function importData(btn) {
           }
         }
 
-        // Плавное растворение и скрытие
         if (statusEl) {
           setTimeout(() => {
             statusEl.style.opacity = "0";
@@ -561,7 +561,6 @@ function restoreBackup(btn) {
         try {
           const data = JSON.parse(ev.target.result);
           
-          // Проверяем, что это бекап Clyp (поддерживаем и старый и новый формат)
           if (data.ACCS || data.accounts) {
             ACCS = data.ACCS || data.accounts || [];
             NOTES = data.NOTES || data.notes || [];
@@ -570,11 +569,9 @@ function restoreBackup(btn) {
               TEMP_SETT = { ...SETT };
             }
             
-            // Восстанавливаем ID или генерируем новые
             nid = data.nid || (ACCS.length > 0 ? Math.max(...ACCS.map(a => a.id)) + 1 : 1);
             nnid = data.nnid || (NOTES.length > 0 ? Math.max(...NOTES.map(n => n.id)) + 1 : 1);
             
-            // Перезагружаем интерфейс
             syncData();
             applySettingsState(SETT);
             
@@ -609,7 +606,6 @@ function exportVault(isAuto = false) {
       }
     });
   } else {
-    // Резервный метод для работы в обычном браузере
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -643,8 +639,7 @@ function exportCSV() {
 }
 
 let eraseTimer = null;
-let eraseCountdown = 10;
-
+let eraseCountdown = 5;
 function eraseVault() {
   const tSe = {
     en: { tit: 'Erase Vault?', desc: 'Are you ABSOLUTELY sure you want to delete ALL accounts and notes? This action cannot be undone.', cnc: 'Cancel', btn: 'Erase Vault' },
@@ -711,8 +706,19 @@ function SP(i, btn) {
   if (btn) btn.classList.add('on');
   if (i === 4) rendSett();
 }
-function goAdd(){ editId=null; clrAddForm(); SP(1,document.querySelectorAll('.ni')[1]); }
-function cancelAdd() { clrAddForm(); editId = null; SP(2, document.querySelectorAll(".ni")[2]); }
+
+function goAdd() {
+  editId = null;
+  clrAddForm();
+  SP(1, document.querySelectorAll(".ni")[1]);
+}
+
+function cancelAdd() {
+  clrAddForm();
+  editId = null;
+  SP(2, document.querySelectorAll(".ni")[2]);
+}
+
 function editA() {
   const a = ACCS.find((x) => x.id === selId);
   if (!a) return;
@@ -747,6 +753,7 @@ function editA() {
     if (target) target.classList.add("on");
   }
 }
+
 function toggleTheme() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const newTheme = isDark ? 'light' : 'dark';
@@ -801,10 +808,10 @@ function genP(){
   updCrack(ent);
   addH(p);
 }
+
 function genPhr() {
   const cnt = parseInt(document.getElementById("lslider").value); 
   
-  // Получаем состояние переключателей напрямую из DOM
   const poptSwitches = document.querySelectorAll('#popt .sw');
   const doCap = poptSwitches[0] ? poptSwitches[0].classList.contains('on') : false;
   const doNum = poptSwitches[1] ? poptSwitches[1].classList.contains('on') : false;
@@ -812,9 +819,7 @@ function genPhr() {
   const ws = [];
   for (let i = 0; i < cnt; i++) {
     let word = WDS[Math.floor(Math.random() * WDS.length)];
-    // Если включены заглавные буквы
     if (doCap) word = word.charAt(0).toUpperCase() + word.slice(1);
-    // Если включены цифры (добавляем случайную цифру в конец слова)
     if (doNum) word += Math.floor(Math.random() * 10);
     ws.push(word);
   }
@@ -824,9 +829,8 @@ function genPhr() {
   document.getElementById("phrase-wrap").style.display = "block";
   document.getElementById("phrase-out").innerHTML = ws
     .map((w, i) => `<span class="pw">${w}</span>${i < ws.length - 1 ? '<span style="font-size:14px;color:var(--tx3);display:flex;align-items:center">·</span>' : ""}`)
-    .join("");
-    
-  // Немного увеличиваем энтропию, если включены усложнения
+  .join("");
+  
   const entBonus = (doCap ? 1 : 0) + (doNum ? 3.32 : 0);
   const ent = Math.round(cnt * (Math.log2(WDS.length) + entBonus));
   curGenEntropy = ent;
@@ -850,10 +854,12 @@ function genPIN() {
   updStr(ent, "ss1", "ss2", "ss3", "ss4", "stxt");
   addH(p);
 }
+
 function updRing(e) {
   const el = document.getElementById("ering");
   if (el) el.setAttribute("stroke-dashoffset", Math.round(170 * (1 - Math.min(e / 128, 1))));
 }
+
 function updCrack(e) {
   const el = document.getElementById("stcrack");
   if (!el) return;
@@ -863,12 +869,14 @@ function updCrack(e) {
   else if (e < 70) el.textContent = l.cYr;
   else el.textContent = l.cCen;
 }
+
 function updStr(e,s1,s2,s3,s4,lid){
   const l = DICT[SETT.lang] || DICT.en;
   let lv,cl,tx;if(e<30){lv=1;cl='var(--ts)';tx=l.strW;}else if(e<60){lv=2;cl='var(--tf)';tx=l.strF;}else if(e<90){lv=3;cl='var(--tg)';tx=l.strG;}else{lv=4;cl='var(--tb)';tx=l.strS;}
   const cs=['w','f','g','s'];[[s1,1],[s2,2],[s3,3],[s4,4]].forEach(([id,n])=>{const el=document.getElementById(id);if(!el)return;el.className='strseg';if(n<=lv)el.classList.add(cs[lv-1]);});
   if(lid){const le=document.getElementById(lid);if(le){le.textContent=tx;le.style.color=cl;}}
 }
+
 function setGT(i,btn){
   gMode=i;
   document.querySelectorAll('.stab').forEach(t=>t.classList.remove('on'));
@@ -885,10 +893,25 @@ function setGT(i,btn){
   updSlBg(sl);
   updateLanguage();
 }
-function onLen(el) { document.getElementById("lval").textContent = el.value; updSlBg(el); }
-function updSlBg(el) { const p = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.background = `linear-gradient(to right,var(--accent) 0%,var(--accent) ${p}%,var(--brm) ${p}%)`; }
-function toggleCC(el) { el.classList.toggle("on"); }
-function copyP() { cpF(document.getElementById("pout").textContent, "tPassCopied"); }
+
+function onLen(el) {
+  document.getElementById("lval").textContent = el.value;
+  updSlBg(el);
+}
+
+function updSlBg(el) {
+  const p = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.background = `linear-gradient(to right,var(--accent) 0%,var(--accent) ${p}%,var(--brm) ${p}%)`;
+}
+
+function toggleCC(el) {
+  el.classList.toggle("on");
+}
+
+function copyP() {
+  cpF(document.getElementById("pout").textContent, "tPassCopied");
+}
+
 function useInVault() {
   const p = document.getElementById("pout").textContent;
   goAdd();
@@ -897,6 +920,7 @@ function useInVault() {
     setTimeout(() => (i.type = "password"), 2200); chkPS(p); toast("tPassInserted");
   }, 80);
 }
+
 function addH(p) {
   const l = document.getElementById("hlist");
   if (!l) return;
@@ -910,8 +934,19 @@ function addH(p) {
 // ═══════════════════════════════════════
 //  ADD ACCOUNT
 // ═══════════════════════════════════════
-function selIco(el, ic) { document.querySelectorAll(".iopt").forEach((o) => o.classList.remove("on")); el.classList.add("on"); selIcon = ic; document.getElementById("prev-ic").textContent = ic; }
-function togTag(el) { const a = el.dataset.a === "1"; el.dataset.a = a ? "0" : "1"; el.style.borderColor = a ? "transparent" : el.style.color; }
+function selIco(el, ic) {
+  document.querySelectorAll(".iopt").forEach((o) => o.classList.remove("on"));
+  el.classList.add("on");
+  selIcon = ic;
+  document.getElementById("prev-ic").textContent = ic;
+}
+
+function togTag(el) {
+  const a = el.dataset.a === "1";
+  el.dataset.a = a ? "0" : "1";
+  el.style.borderColor = a ? "transparent" : el.style.color;
+}
+
 function updPrev(){
   const nm = document.getElementById("a-name").value || "Service Name";
   const em = document.getElementById("a-email").value || "your@email.com";
@@ -930,7 +965,6 @@ function updPrev(){
   if (document.getElementById('a-name').value) { sc += 20; setTip('tip-name', 'ok', 'ic-chk-tip', 'Service name provided'); } else setTip('tip-name', 'wn', 'ic-warn-tip', 'Add service name');
   if (document.getElementById('a-email').value) { sc += 20; setTip('tip-em', 'ok', 'ic-chk-tip', 'Username added'); } else setTip('tip-em', 'wn', 'ic-warn-tip', 'Add username or email');
   
-  // Рассчитываем реальную сложность пароля для честного Security Score
   const pw = document.getElementById('a-pass').value;
   let pCpx = 0; if (pw.length >= 8) pCpx++; if (pw.length >= 12) pCpx++; if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) pCpx++; if (/[0-9]/.test(pw)) pCpx++; if (/[^A-Za-z0-9]/.test(pw)) pCpx++;
   const lv = pCpx < 2 ? 1 : pCpx < 3 ? 2 : pCpx < 5 ? 3 : 4;
@@ -959,11 +993,13 @@ function updPrev(){
   document.getElementById("sc-fill").style.background = scol;
   document.getElementById("sc-lbl").textContent = slbl;
 }
+
 function setTip(id, ty, ic, tx) {
   const el = document.getElementById(id); if (!el) return;
   el.className = "tip " + ty;
   el.innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;flex-shrink:0;margin-top:1px;"><use href="#${ic}"/></svg><span>${tx}</span>`;
 }
+
 function chkPS(v) {
   let s = 0;
   if (v.length >= 8) s++;
@@ -981,14 +1017,29 @@ function chkPS(v) {
   }
   updPrev();
 }
+
 function fillG() {
   let p = ""; const all = CH.U + CH.L + CH.D + CH.S;
   for (let i = 0; i < 18; i++) p += all[Math.floor(Math.random() * all.length)];
   const inp = document.getElementById("a-pass"); inp.type = "text"; inp.value = p;
   setTimeout(() => (inp.type = "password"), 2200); chkPS(p); toast("tStrongGen");
 }
-function tog2FA(btn) { btn.classList.toggle("on"); document.getElementById("tfa-fld").style.display = btn.classList.contains("on") ? "" : "none"; updPrev(); }
-function togPV(id) { const i = document.getElementById(id); i.type = i.type === "password" ? "text" : "password"; }
+
+function tog2FA(btn) {
+  btn.classList.toggle("on");
+  document.getElementById("tfa-fld").style.display = btn.classList.contains(
+    "on",
+  )
+    ? ""
+    : "none";
+  updPrev();
+}
+
+function togPV(id) {
+  const i = document.getElementById(id);
+  i.type = i.type === "password" ? "text" : "password";
+}
+
 function saveAcc(){
   const today = new Date().toISOString();
   const nm = document.getElementById("a-name").value.trim();
@@ -997,7 +1048,6 @@ function saveAcc(){
   const url = document.getElementById("a-url").value.replace(/https?:\/\//, "");
   const ct = document.getElementById("a-cat").value || "General";
   
-  // Добавили чтение и очистку ключа:
   const h2 = document.getElementById("tfa-sw").classList.contains("on");
   const totpK = document.getElementById("a-totp").value.replace(/\s+/g, '').toUpperCase(); 
   const bkpCodes = document.getElementById("a-backup").value.trim();
@@ -1018,6 +1068,7 @@ function saveAcc(){
   editId = null; clrAddForm(); rendA(getF()); selAcc(selId); SP(2, document.querySelectorAll(".ni")[2]);
   syncData();
 }
+
 function clrAddForm(){
   ["a-name", "a-url", "a-email", "a-notes", "a-totp", "a-backup"].forEach((id) => {
     const el = document.getElementById(id);
@@ -1055,7 +1106,12 @@ function clrAddForm(){
   }
   updateLanguage();
 }
-function toggleCatMenu(e) { document.getElementById('cat-wrap').classList.toggle('open'); e.stopPropagation(); }
+
+function toggleCatMenu(e) {
+  document.getElementById("cat-wrap").classList.toggle("open");
+  e.stopPropagation();
+}
+
 function setCat(val, txt, el) {
   if(event) event.stopPropagation(); 
   document.getElementById('cat-val').textContent = txt; 
@@ -1064,7 +1120,13 @@ function setCat(val, txt, el) {
   opts.forEach(o => o.classList.remove('on')); el.classList.add('on'); 
   document.getElementById('cat-wrap').classList.remove('open'); updPrev(); 
 }
-function toggleCustomMenu(id, e) { const wrap = document.getElementById(id); if (wrap) wrap.classList.toggle('open'); if (e) e.stopPropagation(); }
+
+function toggleCustomMenu(id, e) {
+  const wrap = document.getElementById(id);
+  if (wrap) wrap.classList.toggle("open");
+  if (e) e.stopPropagation();
+}
+
 function updateCustomSel(wrapId, txt, el) {
   if (event) event.stopPropagation();
   const wrap = document.getElementById(wrapId); if (!wrap) return;
@@ -1081,6 +1143,7 @@ function rendA(items){
   const cl = DICT[SETT.lang] || DICT.en;
   l.innerHTML=items.length===0?`<div style="padding:24px;text-align:center;color:var(--tx3);font-size:11px;font-weight:600">${cl.tNoAcc}</div>`:items.map(a=>`<div class="ai${a.id===selId?' on':''}" onclick="selAcc(${a.id})"><div class="aico">${a.icon}</div><div style="flex:1;min-width:0"><div class="an">${a.name}</div><div class="ae">${a.email}</div></div><div class="atag" style="background:var(--tag-${a.tc}-bg);color:var(--tag-${a.tc})">${a.tag}</div></div>`).join('');
 }
+
 function selAcc(id) {
   selId = id; passVis = false;
   const a = ACCS.find((x) => x.id === id); if (!a) return;
@@ -1120,7 +1183,7 @@ function selAcc(id) {
   }
   const slbl = document.getElementById('d-str-lbl'); slbl.textContent = txts[lv-1]; slbl.style.color = clrs[lv-1];
 
-  // 1. Расчет возраста пароля
+  // 1. Calc password age
   const changedTime = new Date(a.changed || a.added).getTime();
   const daysOld = Math.floor((Date.now() - changedTime) / (1000 * 3600 * 24));
   const dAge = document.getElementById('d-age');
@@ -1136,7 +1199,7 @@ function selAcc(id) {
       dAge.innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-circle-tip"/></svg>${daysOld} ${l.dPlural} (${l.ageCrit})`;
   }
 
-  // 2. Расчет уникальности (работает за доли миллисекунды)
+  // 2. Unique check
   const samePassCount = ACCS.filter(x => x.pass === a.pass).length;
   const dUnq = document.getElementById('d-unq');
   
@@ -1170,15 +1233,14 @@ function selAcc(id) {
     fcard.appendChild(row);
   }
   updateTOTPUI();
-  // Настройка новой единой карточки двухфакторной аутентификации
-  backupVis = false; // Сбрасываем флаг глазка при переключении
+
+  backupVis = false;
   const totpWrap = document.getElementById('totp-wrap');
   const bRow = document.getElementById('dbackup-row');
   const dBackupTxt = document.getElementById('d-backup-txt');
 
   if (a.has2fa) {
       totpWrap.style.display = 'flex';
-      // Если есть резервные коды — показываем вторую строчку внутри карточки
       if (a.backupCodes) {
           bRow.style.display = 'flex';
           dBackupTxt.textContent = "••••••••••••";
@@ -1189,8 +1251,19 @@ function selAcc(id) {
       totpWrap.style.display = 'none';
   }
 }
-function getF(src) { const s = src || ACCS; return fMode === "all" ? s : s.filter((a) => a.tc === fMode); }
-function setF(f, btn) { fMode = f; document.querySelectorAll(".fchip").forEach((c) => c.classList.remove("on")); btn.classList.add("on"); rendA(getF()); }
+
+function getF(src) {
+  const s = src || ACCS;
+  return fMode === "all" ? s : s.filter((a) => a.tc === fMode);
+}
+
+function setF(f, btn) {
+  fMode = f;
+  document.querySelectorAll(".fchip").forEach((c) => c.classList.remove("on"));
+  btn.classList.add("on");
+  rendA(getF());
+}
+
 function filterA(q) { 
   const query = q.toLowerCase();
   
@@ -1205,6 +1278,7 @@ function filterA(q) {
     return matchName; 
   }))); 
 }
+
 function sortA(m){
   curSort = m;
   if(m==='az')ACCS.sort((a,b)=>a.name.localeCompare(b.name));
@@ -1213,47 +1287,94 @@ function sortA(m){
   else if(m==='recent') ACCS.sort((a,b)=>(b.lastUsed || 0)-(a.lastUsed || 0));
   rendA(getF());
 }
-function togDP() { passVis = !passVis; const a = ACCS.find((x) => x.id === selId); document.getElementById("dpass").textContent = passVis ? a.pass : "••••••••••••"; }
-function cpDE() { const a = ACCS.find((x) => x.id === selId); if (a) cpF(a.email, "tEmailCopied"); markUsed(); }
-function cpDP() { const a = ACCS.find((x) => x.id === selId); if (a) cpF(a.pass, "tPassCopied"); markUsed(); }
-function delA() { const a = ACCS.find((x) => x.id === selId); if (!a) return; document.getElementById("del-name").textContent = a.name; document.getElementById("del-modal").classList.add("on"); }
+
+function togDP() {
+  passVis = !passVis;
+  const a = ACCS.find((x) => x.id === selId);
+  document.getElementById("dpass").textContent = passVis
+    ? a.pass
+    : "••••••••••••";
+}
+
+function cpDE() {
+  const a = ACCS.find((x) => x.id === selId);
+  if (a) cpF(a.email, "tEmailCopied");
+  markUsed();
+}
+
+function cpDP() {
+  const a = ACCS.find((x) => x.id === selId);
+  if (a) cpF(a.pass, "tPassCopied");
+  markUsed();
+}
+
+function delA() {
+  const a = ACCS.find((x) => x.id === selId);
+  if (!a) return;
+  document.getElementById("del-name").textContent = a.name;
+  document.getElementById("del-modal").classList.add("on");
+}
+
 function confDel() {
-  ACCS = ACCS.filter((x) => x.id !== selId); closeM();
+  ACCS = ACCS.filter((x) => x.id !== selId);
+  closeM();
   const l = DICT[SETT.lang] || DICT.en;
-  if (ACCS.length > 0) { 
-    selId = ACCS[0].id; rendA(getF()); selAcc(selId); 
-  } else { 
-    document.getElementById("alist").innerHTML = `<div style="padding:24px;text-align:center;color:var(--tx3);font-size:11px;font-weight:600">${l.tNoAcc}</div>`; 
-    clearAccDet(); 
-    const c = document.getElementById('a-count'); if (c) c.textContent = `(${ACCS.length})`;
+  if (ACCS.length > 0) {
+    selId = ACCS[0].id;
+    rendA(getF());
+    selAcc(selId);
+  } else {
+    document.getElementById("alist").innerHTML =
+      `<div style="padding:24px;text-align:center;color:var(--tx3);font-size:11px;font-weight:600">${l.tNoAcc}</div>`;
+    clearAccDet();
+    const c = document.getElementById("a-count");
+    if (c) c.textContent = `(${ACCS.length})`;
   }
   toast("tAccDeleted");
   syncData();
 }
-function closeM() { document.getElementById("del-modal").classList.remove("on"); }
+
+function closeM() {
+  document.getElementById("del-modal").classList.remove("on");
+}
 
 function clearAccDet() {
   selId = null;
-  const hero = document.querySelector('.det-hero');
-  const body = document.querySelector('.det-body');
-  if (hero) hero.style.display = 'none';
-  if (body) body.style.display = 'none';
+  const hero = document.querySelector(".det-hero");
+  const body = document.querySelector(".det-body");
+  if (hero) hero.style.display = "none";
+  if (body) body.style.display = "none";
 }
 
 function setSort(m, txt, el) {
-  if (event) event.stopPropagation(); 
-  document.getElementById('sort-val').textContent = txt; 
-  document.querySelectorAll('.custom-opt').forEach(o => o.classList.remove('on'));
-  el.classList.add('on'); 
-  document.getElementById('sort-wrap').classList.remove('open'); 
+  if (event) event.stopPropagation();
+  document.getElementById("sort-val").textContent = txt;
+  document
+    .querySelectorAll(".custom-opt")
+    .forEach((o) => o.classList.remove("on"));
+  el.classList.add("on");
+  document.getElementById("sort-wrap").classList.remove("open");
   sortA(m);
 }
-function toggleSortMenu(e) { const wrap = document.getElementById('sort-wrap'); wrap.classList.toggle('open'); e.stopPropagation(); }
-document.addEventListener('click', (e) => {
-  document.querySelectorAll('.custom-sel-wrap.open').forEach(wrap => { if (!wrap.contains(e.target)) wrap.classList.remove('open'); });
+
+function toggleSortMenu(e) {
+  const wrap = document.getElementById("sort-wrap");
+  wrap.classList.toggle("open");
+  e.stopPropagation();
+}
+
+document.addEventListener("click", (e) => {
+  document.querySelectorAll(".custom-sel-wrap.open").forEach((wrap) => {
+    if (!wrap.contains(e.target)) wrap.classList.remove("open");
+  });
 });
+
 function markUsed() {
-  const a = ACCS.find(x => x.id === selId); if (a) { a.lastUsed = Date.now(); if (curSort === 'recent') sortA('recent'); }
+  const a = ACCS.find((x) => x.id === selId);
+  if (a) {
+    a.lastUsed = Date.now();
+    if (curSort === "recent") sortA("recent");
+  }
   syncData();
 }
 
@@ -1266,7 +1387,7 @@ function rendN(src){
   const cl = DICT[SETT.lang] || DICT.en;
   l.innerHTML=ord.length===0?`<div style="padding:24px;text-align:center;color:var(--tx3);font-size:11px;font-weight:600">${cl.tNoNotes}</div>`:ord.map(n=>`<div class="ni2${n.id===selNid?' on':''}" onclick="selN(${n.id})"><div style="display:flex;align-items:center;gap:5px"><div class="ntit">${n.title||'Untitled'}</div>${n.pinned?'<span style="font-size:11px">📌</span>':''}</div><div class="nprev">${n.body.replace(/\n/g,' ').substring(0,50)}…</div><div class="nmeta"><div class="ndate">${fmtDate(n.date)}</div>${n.tags.map(t=>`<span class="ntag">${t}</span>`).join('')}</div></div>`).join('');
 }
-// Управление видимостью редактора заметок
+
 function toggleNoteEditor(show) {
   const hdr = document.querySelector('.ned-hdr');
   const body = document.querySelector('.ned-body');
@@ -1295,7 +1416,6 @@ function toggleNoteEditor(show) {
   }
 }
 
-// Управление статусом "Сохранение..." / "Сохранено"
 let saveStatusT = null;
 function setSaveStatus(state) {
   const lbl = document.getElementById('slbl');
@@ -1305,17 +1425,15 @@ function setSaveStatus(state) {
 
   if (state === 'saving') {
     lbl.textContent = l.tSaving;
-    lbl.style.color = 'var(--tx3)'; // Серый цвет процесса
+    lbl.style.color = 'var(--tx3)';
   } else if (state === 'saved') {
     lbl.textContent = l.tSavedNote;
-    lbl.style.color = 'var(--ok)'; // Зеленая вспышка успеха
+    lbl.style.color = 'var(--ok)';
     
-    // Через 2 секунды плавно возвращаем в базовый серый цвет
     saveStatusT = setTimeout(() => { 
       lbl.style.color = 'var(--tx3)'; 
     }, 2000);
   } else if (state === 'idle') {
-    // Базовое состояние при открытии заметки
     lbl.textContent = l.tSavedNote;
     lbl.style.color = 'var(--tx3)';
   }
@@ -1323,11 +1441,12 @@ function setSaveStatus(state) {
 
 function selN(id) {
   selNid = id; const n = NOTES.find((x) => x.id === id); if (!n) return;
-  toggleNoteEditor(true); setSaveStatus('idle'); // Показываем редактор и прячем статус
+  toggleNoteEditor(true); setSaveStatus('idle');
   rendN(); document.getElementById("n-tin").value = n.title; document.getElementById("n-ta").value = n.body; updWC(n.body);
   document.getElementById("pin-btn").style.color = n.pinned ? "var(--accent)" : "";
   document.querySelectorAll(".ntchip").forEach((c) => c.classList.toggle("on", n.tags.includes(c.textContent)));
 }
+
 function newN() {
   const n = { id: nnid++, title: "", body: "", date: new Date().toISOString(), tags: [], pinned: false };
   NOTES.unshift(n); selNid = n.id; 
@@ -1337,6 +1456,7 @@ function newN() {
   document.querySelectorAll(".ntchip").forEach((c) => c.classList.remove("on"));
   syncData();
 }
+
 function delN() {
   NOTES = NOTES.filter((x) => x.id !== selNid);
   if (NOTES.length > 0) {
@@ -1344,47 +1464,87 @@ function delN() {
   } else { 
     document.getElementById("n-tin").value = ""; document.getElementById("n-ta").value = ""; document.getElementById("wc").textContent = "0 words"; 
     rendN(); selNid = null;
-    toggleNoteEditor(false); // Прячем редактор, так как заметок 0
+    toggleNoteEditor(false);
   }
   toast("tNoteDeleted");
   syncData();
 }
-function onNT(v) { const n = NOTES.find((x) => x.id === selNid); if (n) { n.title = v; setSaveStatus('saving'); schedSave(); } }
-function onNC(v) { const n = NOTES.find((x) => x.id === selNid); if (n) { n.body = v; setSaveStatus('saving'); schedSave(); updWC(v); } }
+
+function onNT(v) {
+  const n = NOTES.find((x) => x.id === selNid);
+  if (n) {
+    n.title = v;
+    setSaveStatus("saving");
+    schedSave();
+  }
+}
+
+function onNC(v) {
+  const n = NOTES.find((x) => x.id === selNid);
+  if (n) {
+    n.body = v;
+    setSaveStatus("saving");
+    schedSave();
+    updWC(v);
+  }
+}
+
 function togNT(el) {
   el.classList.toggle("on"); const n = NOTES.find((x) => x.id === selNid); if (!n) return; const t = el.textContent;
   if (el.classList.contains("on") && !n.tags.includes(t)) n.tags.push(t); else n.tags = n.tags.filter((x) => x !== t); 
   setSaveStatus('saving'); schedSave();
 }
+
 function schedSave() {
   clearTimeout(nSaveT);
   nSaveT = setTimeout(() => {
     rendN();
     syncData();
-    setSaveStatus('saved'); // Выводим "Сохранено" после окончания печати
+    setSaveStatus('saved');
   }, 700);
 }
-function updWC(t) { const w = t.trim().split(/\s+/).filter((w) => w).length; document.getElementById("wc").textContent = `${w} words`; }
+
+function updWC(t) {
+  const w = t
+    .trim()
+    .split(/\s+/)
+    .filter((w) => w).length;
+  document.getElementById("wc").textContent = `${w} words`;
+}
+
 function pinN() {
   const n = NOTES.find((x) => x.id === selNid); if (!n) return;
   n.pinned = !n.pinned; document.getElementById("pin-btn").style.color = n.pinned ? "var(--accent)" : "";
   rendN(); toast(n.pinned ? "tNotePinned" : "tNoteUnpinned");
   syncData();
 }
-function cpNoteContent() { const n = NOTES.find((x) => x.id === selNid); if (n) cpF(n.body, "tNoteCopied"); }
+
+function cpNoteContent() {
+  const n = NOTES.find((x) => x.id === selNid);
+  if (n) cpF(n.body, "tNoteCopied");
+}
+
 function setNF(f, btn) {
   nFilt = f; document.querySelectorAll(".nl-hdr .fchip").forEach((c) => c.classList.remove("on")); btn.classList.add("on");
   let fi = NOTES; if (f === "pinned") fi = NOTES.filter((n) => n.pinned); else if (f !== "all") fi = NOTES.filter((n) => n.tags.some((t) => t.toLowerCase() === f));
   rendN(fi);
 }
-function filtN(q) { const ql = q.toLowerCase(); rendN(NOTES.filter((n) => n.title.toLowerCase().includes(ql) || n.body.toLowerCase().includes(ql))); }
+
+function filtN(q) {
+  const ql = q.toLowerCase();
+  rendN(
+    NOTES.filter(
+      (n) =>
+        n.title.toLowerCase().includes(ql) || n.body.toLowerCase().includes(ql),
+    ),
+  );
+}
 
 // ═══════════════════════════════════════
 //  SETTINGS RENDERER
 // ═══════════════════════════════════════
 let curSS='general';
 let updState='idle';
-
 const SS = {
   general: () => {
     const l = DICT[TEMP_SETT.lang] || DICT.en;
@@ -1484,11 +1644,11 @@ const SS = {
         <div style="flex:1">
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="font-size:13px;font-weight:800;letter-spacing:-.015em" id="upd-title">Clyp v...</div>
-            <div class="upd-badge" id="upd-badge" style="background:var(--ok-bg);color:var(--ok);padding:4px 10px;font-size:11px;display:flex;align-items:center;gap:4px;">
-              <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg>Up to date
+            <div class="upd-badge" id="upd-badge">
+              <svg viewBox="0 0 24 24" style="width:12px;height:12px"><use href="#ic-chk-tip"/></svg>Up to date
             </div>
           </div>
-          <div style="font-size:11px;color:var(--tx3);font-weight:500" id="upd-sub">Current version</div>
+          <div style="font-size:12px;color:var(--tx3);font-weight:500;margin-top: 4px" id="upd-sub">Current version</div>
         </div>
         <button class="btn-p" id="upd-btn" data-action="runUpdateCheck" style="height:34px;font-size:12px">
           <svg viewBox="0 0 24 24"><use href="#ic-inner-upd"/></svg><span id="upd-btn-lbl">${l.suChk}</span>
@@ -1514,7 +1674,13 @@ const SS = {
   }
 };
 
-function setSS(k, btn) { curSS = k; document.querySelectorAll(".sni").forEach((b) => b.classList.remove("on")); btn.classList.add("on"); rendSett(); }
+function setSS(k, btn) {
+  curSS = k;
+  document.querySelectorAll(".sni").forEach((b) => b.classList.remove("on"));
+  btn.classList.add("on");
+  rendSett();
+}
+
 function rendSett() { 
   const el = document.getElementById("sett-body"); 
   if (el) el.innerHTML = (SS[curSS] || SS.general)(); 
@@ -1527,7 +1693,6 @@ function rendSett() {
       const relContainer = document.getElementById('release-notes-container');
       if (!relContainer) return;
 
-      // Внутренняя функция для красивой отрисовки заметок
       const drawNotes = (relVer, relNotes) => {
         if (!relVer || !relNotes) return;
         const cleanNotes = relNotes.split('\n').filter(line => line.trim() !== '').join('<br style="content: \'\'; display: block; margin: 4px 0;">');
@@ -1537,39 +1702,33 @@ function rendSett() {
           <div style="padding-bottom: 2px;">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
               <span style="font-size:12px;font-weight:800;color:var(--tx1)">v${relVer}</span>
-              <span class="bdg" style="background:var(--${isCurrent ? 'ok-bg' : 'accent-lt'});color:var(--${isCurrent ? 'ok' : 'accent'});display:flex;align-items:center;gap:4px;padding:2px 6px;">
-                <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;"><use href="#${isCurrent ? 'ic-chk-tip' : 'ic-inner-upd'}"/></svg>${isCurrent ? 'Current' : 'New Release'}
+              <span class="bdg" style="background:var(--${isCurrent ? 'ok-bg' : 'accent-lt'});color:var(--${isCurrent ? 'sok' : 'accent'});display:flex;align-items:center;gap:4px;padding:2px 6px;">
+                ${isCurrent ? 'Current' : 'New Release'}
               </span>
             </div>
             <div style="font-size:11px;color:var(--tx2);font-weight:500;line-height:1.4;letter-spacing:0.01em;" class="gh-notes">${cleanNotes}</div>
           </div>`;
       };
 
-      // 1. Сначала мгновенно показываем то, что сохранено локально (оффлайн кэш)
       if (SETT.releaseVersion && SETT.releaseNotes) {
         drawNotes(SETT.releaseVersion, SETT.releaseNotes);
       }
 
-      // 2. Делаем независимый тихий запрос напрямую в GitHub API
       fetch('https://api.github.com/repos/voilsy/Clyp/releases/latest')
         .then(res => res.json())
         .then(data => {
           if (data && data.tag_name) {
-            // GitHub отдает tag_name в формате "v1.1.1", отрезаем "v"
             const ghVersion = data.tag_name.replace('v', '');
             const ghNotes = data.body;
             
-            // Перерисовываем с самыми свежими данными
             drawNotes(ghVersion, ghNotes);
             
-            // Сохраняем в память и на диск, чтобы при отсутствии интернета всё работало
             SETT.releaseVersion = ghVersion;
             SETT.releaseNotes = ghNotes;
             syncData();
           }
         })
         .catch(err => {
-          // Если нет интернета и нет кэша
           if (!SETT.releaseVersion) {
             relContainer.innerHTML = `<div style="font-size:11px;color:var(--tx3);text-align:center;font-weight:600;">Нет подключения к GitHub</div>`;
           }
@@ -1581,7 +1740,6 @@ function rendSett() {
 // ═══════════════════════════════════════
 //  REAL AUTO-UPDATER LOGIC
 // ═══════════════════════════════════════
-
 function runUpdateCheck() {
   const btn = document.getElementById('upd-btn');
   const lbl = document.getElementById('upd-btn-lbl');
@@ -1628,7 +1786,7 @@ function runUpdateCheck() {
   log.textContent = '> Connecting to GitHub update servers...\n';
   badge.style.background = 'var(--wn-bg)';
   badge.style.color = 'var(--wn)';
-  badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-warn-tip"/></svg> Checking...`;
+  badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px"><use href="#ic-warn-tip"/></svg> Checking...`;
 
   if (window.electronAPI && window.electronAPI.checkForUpdates) {
     window.electronAPI.checkForUpdates();
@@ -1643,7 +1801,7 @@ function runUpdateCheck() {
 }
 
 // ═══════════════════════════════════════
-//  IPC LISTENERS (Слушаем ответы от GitHub)
+//  IPC LISTENERS (GitHub update check & download progress)
 // ═══════════════════════════════════════
 if (window.electronAPI) {
   if (window.electronAPI.onUpdateStatus) {
@@ -1710,7 +1868,7 @@ if (window.electronAPI) {
           if (pct) pct.style.display = 'none';
           badge.style.background = 'var(--wn-bg)';
           badge.style.color = 'var(--wn)';
-          badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-warn-tip"/></svg> Available`;
+          badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;"><use href="#ic-warn-tip"/></svg> Available`;
         }
       } 
       else if (data.status === 'latest') {
@@ -1721,7 +1879,7 @@ if (window.electronAPI) {
         if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = l.suChk; }
         badge.style.background = 'var(--ok-bg)';
         badge.style.color = 'var(--ok)';
-        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg> Up to date`;
+        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px"><use href="#ic-chk-tip"/></svg> Up to date`;
         pLbl.textContent = l.tUpdLatest;
         if (pct) pct.style.display = 'none';
         if (fill) { fill.style.width = '100%'; fill.style.background = 'var(--ok)'; }
@@ -1734,7 +1892,7 @@ if (window.electronAPI) {
         if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = 'Install & Restart'; btn.style.background = 'var(--ok)'; }
         badge.style.background = 'var(--ok-bg)';
         badge.style.color = 'var(--ok)';
-        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-chk-tip"/></svg> Downloaded`;
+        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px"><use href="#ic-chk-tip"/></svg> Downloaded`;
         pLbl.textContent = l.tUpdReady;
         if (pct) pct.style.display = 'none';
       } 
@@ -1746,7 +1904,7 @@ if (window.electronAPI) {
         if (btn) { btn.disabled = false; lbl.style.display = 'inline'; lbl.textContent = l.suChk; }
         badge.style.background = 'var(--er-bg)';
         badge.style.color = 'var(--er)';
-        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><use href="#ic-circle-tip"/></svg> Error`;
+        badge.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px"><use href="#ic-circle-tip"/></svg> Error`;
         pLbl.textContent = l.tUpdError;
         if (pct) pct.style.display = 'none';
         if (fill) fill.style.background = 'var(--er)';
@@ -1765,7 +1923,7 @@ if (window.electronAPI) {
 }
 
 // ═══════════════════════════════════════
-//  TOAST & COPY (УМНАЯ СИСТЕМА ТОСТОВ)
+//  TOAST & COPY (Smart handling with auto-hide and message localization)
 // ═══════════════════════════════════════
 let tt, ttHide;
 function toast(msgKey) {
@@ -1786,12 +1944,14 @@ function toast(msgKey) {
     ttHide = setTimeout(() => t.remove(), 300);
   }, 2100);
 }
-function cpF(v, msgKey) { navigator.clipboard.writeText(v).catch(() => {}); toast(msgKey); }
+function cpF(v, msgKey) {
+  navigator.clipboard.writeText(v).catch(() => {});
+  toast(msgKey);
+}
 
 // ═══════════════════════════════════════
 //  REAL TOTP ALGORITHM & TIMER
 // ═══════════════════════════════════════
-
 function base32ToBuffer(base32) {
   const base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let bits = "";
@@ -1967,7 +2127,6 @@ document.addEventListener('input', (e) => {
 // ═══════════════════════════════════════
 let fStep = 0;
 const fMax = 3;
-
 function getFtueContent() {
   const l = DICT[TEMP_SETT.lang] || DICT.en;
   
@@ -2110,27 +2269,19 @@ async function initApp() {
 
   setTimeout(() => {
     const loader = document.getElementById('loader-wrap');
-    loader.style.opacity = '0'; 
-    
-    setTimeout(() => {
-      loader.style.visibility = 'hidden';
-      
-      if (isFirstRun) {
-        document.getElementById('ftue-wrap').style.display = 'flex';
-        renderFtue();
-      } else {
-        const sb = document.querySelector('.sb');
-        const main = document.querySelector('.main');
-        sb.style.display = 'flex';
-        main.style.display = 'flex';
+    if (loader) loader.classList.add('hide');
         
-        sb.classList.add('reveal-anim');
-        main.classList.add('reveal-anim');
-        
-        launchMainApp();
-      }
-    }, 500); 
-  }, 1500);
+    if (isFirstRun) {
+      document.getElementById('ftue-wrap').style.display = 'flex';
+      renderFtue();
+    } else {
+      const sb = document.querySelector('.sb');
+      const main = document.querySelector('.main');
+      sb.style.display = 'flex';
+      main.style.display = 'flex';
+      launchMainApp();
+    }
+  }, 2000);
 }
 
 function launchMainApp() {

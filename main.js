@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron');
-const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 
@@ -48,40 +47,40 @@ function createWindow () {
   ipcMain.on('window-close', () => mainWindow.close());
 }
 
-autoUpdater.autoDownload = false; 
-autoUpdater.autoInstallOnAppQuit = true;
-
-autoUpdater.on('checking-for-update', () => {
-  if(mainWindow) mainWindow.webContents.send('update-status', { status: 'checking', msg: 'Checking updates server...' });
-});
-autoUpdater.on('update-available', (info) => {
-  if(mainWindow) mainWindow.webContents.send('update-status', { 
-    status: 'available', 
-    msg: `Update found: v${info.version}`,
-    version: info.version,
-    notes: info.releaseNotes 
-  });
-});
-autoUpdater.on('update-not-available', () => {
-  if(mainWindow) mainWindow.webContents.send('update-status', { status: 'latest', msg: 'No updates available. You are on the latest version.' });
-});
-autoUpdater.on('download-progress', (progressObj) => {
-  if(mainWindow) mainWindow.webContents.send('update-progress', Math.round(progressObj.percent));
-});
-autoUpdater.on('update-downloaded', () => {
-  if(mainWindow) mainWindow.webContents.send('update-status', { status: 'ready', msg: 'Update downloaded. Ready to install.' });
-});
-autoUpdater.on('error', (err) => {
-  if(mainWindow) mainWindow.webContents.send('update-status', { status: 'error', msg: `Error: ${err.message}` });
-});
-
 app.whenReady().then(() => {
   nativeTheme.themeSource = 'system';
   createWindow();
   
-  ipcMain.on('check-for-updates', () => autoUpdater.checkForUpdates());
-  ipcMain.on('download-update', () => autoUpdater.downloadUpdate());
-  ipcMain.on('install-update', () => autoUpdater.quitAndInstall());
+  // FIX: “Lazy” loading of a heavy updater in the background
+  setTimeout(() => {
+    const { autoUpdater } = require('electron-updater');
+    
+    autoUpdater.autoDownload = false; 
+    autoUpdater.autoInstallOnAppQuit = true;
+
+    autoUpdater.on('checking-for-update', () => {
+      if(mainWindow) mainWindow.webContents.send('update-status', { status: 'checking', msg: 'Checking updates server...' });
+    });
+    autoUpdater.on('update-available', (info) => {
+      if(mainWindow) mainWindow.webContents.send('update-status', { status: 'available', msg: `Update found: v${info.version}`, version: info.version, notes: info.releaseNotes });
+    });
+    autoUpdater.on('update-not-available', () => {
+      if(mainWindow) mainWindow.webContents.send('update-status', { status: 'latest', msg: 'No updates available. You are on the latest version.' });
+    });
+    autoUpdater.on('download-progress', (progressObj) => {
+      if(mainWindow) mainWindow.webContents.send('update-progress', Math.round(progressObj.percent));
+    });
+    autoUpdater.on('update-downloaded', () => {
+      if(mainWindow) mainWindow.webContents.send('update-status', { status: 'ready', msg: 'Update downloaded. Ready to install.' });
+    });
+    autoUpdater.on('error', (err) => {
+      if(mainWindow) mainWindow.webContents.send('update-status', { status: 'error', msg: `Error: ${err.message}` });
+    });
+
+    ipcMain.on('check-for-updates', () => autoUpdater.checkForUpdates());
+    ipcMain.on('download-update', () => autoUpdater.downloadUpdate());
+    ipcMain.on('install-update', () => autoUpdater.quitAndInstall());
+  }, 1000);
 });
 
 app.on('window-all-closed', () => {

@@ -1,3 +1,52 @@
+/* montserrat-regular */
+@font-face {
+  font-display: swap;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/montserrat-v31-cyrillic_cyrillic-ext_latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-500 */
+@font-face {
+  font-display: swap;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  src: url('assets/fonts/montserrat-v31-cyrillic_cyrillic-ext_latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-600 */
+@font-face {
+  font-display: swap;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  src: url('assets/fonts/montserrat-v31-cyrillic_cyrillic-ext_latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-700 */
+@font-face {
+  font-display: swap;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  src: url('assets/fonts/montserrat-v31-cyrillic_cyrillic-ext_latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-800 */
+@font-face {
+  font-display: swap;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 800;
+  src: url('assets/fonts/montserrat-v31-cyrillic_cyrillic-ext_latin-800.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* montserrat-900 */
+@font-face {
+  font-display: swap;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 900;
+  src: url('assets/fonts/montserrat-v31-cyrillic_cyrillic-ext_latin-900.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
@@ -657,12 +706,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 .wc{font-size:11px;color:var(--tx3);margin-left:auto;font-weight:600}
 .saved-lbl {
   font-size: 11px;
-  color: var(--tx3); /* По умолчанию серый */
+  color: var(--tx3);
   font-weight: 600;
   white-space: nowrap;
-  min-width: 60px; /* Слегка увеличили, чтобы длинные переводы не дергали кнопки */
+  min-width: 60px;
   text-align: right;
-  transition: color 0.4s ease; /* Оставили только плавную смену цвета */
+  transition: color 0.4s ease;
 }
 
 /* ════════════════════════════
@@ -678,7 +727,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 .sh{font-size:18px;font-weight:800;letter-spacing:-.02em;}
 
 .scard{background:var(--bg-card);border:1px solid var(--br);border-radius:var(--r16);overflow:visible;box-shadow:var(--sh1); margin-bottom: 16px;}
-.srow{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--br);gap:13px}
+.srow{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--br);gap:12px}
 .srow:last-child{border-bottom:none}
 .sico{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sico svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -689,10 +738,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 
 /* Update check panel */
 .upd-panel{background:var(--bg-card);border:1px solid var(--br);border-radius:var(--r16);overflow:hidden;box-shadow:var(--sh1)}
-.upd-hero{padding:18px 18px 14px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--br)}
+.upd-hero{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--br)}
 .upd-ico{background:var(--accent);box-shadow: 0 4px 14px var(--accent-glow);width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .upd-ico svg{width:24px;height:24px;fill:white;}
-.upd-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.upd-badge{background:var(--ok-bg);color:var(--ok);display:flex;align-items:center;gap:4px;padding:3px 6px;border-radius:6px;font-size:10px;font-weight:700}
 .upd-prog-wrap{padding:14px 18px;display:flex;flex-direction:column;gap:8px}
 .upd-prog-bar{height:6px;border-radius:3px;background:var(--br);overflow:hidden}
 .upd-prog-fill{height:100%;border-radius:3px;background:var(--accent);width:0%;transition:width .3s}
@@ -828,9 +877,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   position: absolute; inset: 0; background: var(--bg-main); z-index: 9999;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   transition: opacity 0.5s ease, visibility 0.5s;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+}
+.loader-wrap.hide {
+  opacity: 0;
+  visibility: hidden;
 }
 
-/* Уникальная анимация "живого дыхания" логотипа со смещением неонового свечения */
 @keyframes clyp-organic-glow {
   0% {
     transform: scale(1);
@@ -853,7 +906,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   animation: clyp-organic-glow 2.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Универсальные keyframes для микро-спиннеров внутри кнопок */
 @keyframes ring-rotate { 100% { transform: rotate(360deg); } }
 @keyframes ring-dash {
   0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
@@ -866,7 +918,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   to { transform: rotate(360deg); }
 }
 .spinning svg {
-  animation: spin 1s linear infinite;
+  animation: spin 1.1s linear infinite;
 }
 
 /* ═══════════════════════════════════════
@@ -894,4 +946,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 /* Обводка точки для вкладки внутри настроек (позицию чуть смещаем) */
 .sni.has-update::before { 
   box-shadow: 0 0 0 2px var(--bg-side); 
+}
+
+.gh-notes {
+  padding: 4px 6px 2px 6px; /* Внутренние отступы от краев карточки */
+  overflow-wrap: break-word;
+}
+.gh-notes br {
+  content: "";
+  display: block;
+  margin-top: 6px; /* Задаем красивый контролируемый отступ между строками релиза */
 }
