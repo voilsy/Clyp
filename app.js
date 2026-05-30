@@ -1702,7 +1702,7 @@ function rendSett() {
           <div style="padding-bottom: 2px;">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
               <span style="font-size:12px;font-weight:800;color:var(--tx1)">v${relVer}</span>
-              <span class="bdg" style="background:var(--${isCurrent ? 'ok-bg' : 'accent-lt'});color:var(--${isCurrent ? 'sok' : 'accent'});display:flex;align-items:center;gap:4px;padding:2px 6px;">
+              <span class="bdg" style="background:var(--${isCurrent ? 'ok-bg' : 'accent-lt'});color:var(--${isCurrent ? 'ok' : 'accent'});display:flex;align-items:center;gap:4px;padding:2px 6px;">
                 ${isCurrent ? 'Current' : 'New Release'}
               </span>
             </div>
